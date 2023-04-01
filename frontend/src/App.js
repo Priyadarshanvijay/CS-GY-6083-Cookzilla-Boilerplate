@@ -8,6 +8,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Profile from './components/Profile';
 import EventBus from './common/EventBus';
+import Music from './components/Music';
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -36,7 +37,7 @@ const App = () => {
   return (
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <Link to={'/'} className="navbar-brand">
+        <Link to={'/music'} className="navbar-brand">
           FatEar MusicHub
         </Link>
         <div className="navbar-nav mr-auto">
@@ -81,6 +82,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/music" element={<Music />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>

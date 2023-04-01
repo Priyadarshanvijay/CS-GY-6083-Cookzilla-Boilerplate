@@ -13,6 +13,7 @@ class UserRegistration(BaseModel):
     password: str
     firstName: str
     lastName: str
+    nickname: str
 
 
 class LoginForm(BaseModel):
@@ -35,8 +36,8 @@ class AuthService():
         try:
             passwordBytes = user.password.encode('utf-8')
             hashedPassword = bcrypt.hashpw(passwordBytes, bcrypt.gensalt())
-            _ = db.query(("INSERT into " + db.PersonTable + " (username, pwd, fname, lname) values (%s,%s,%s,%s)"), [
-                user.userName, hashedPassword, user.firstName, user.lastName
+            _ = db.query(("INSERT into " + db.PersonTable + " (username, pwd, fname, lname, nickname) values (%s,%s,%s,%s,%s)"), [
+                user.userName, hashedPassword, user.firstName, user.lastName, user.nickname
             ])
             return {
                 **user.dict(exclude={'password'}),
@@ -90,7 +91,7 @@ class AuthService():
         db = self.Database
         try:
             queryResult = db.query(
-                ("SELECT username, fname, lname FROM user where username= % s"),
+                ("SELECT username, fname, lname, nickname FROM user where username= % s"),
                 [userName]
             )
             if (len(queryResult['result']) != 1):

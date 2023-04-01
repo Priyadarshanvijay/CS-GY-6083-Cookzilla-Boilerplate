@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
+import React, { useEffect, useState, useRef } from 'react';
+import Form from 'react-validation/build/form';
+import Input from 'react-validation/build/input';
 import { Navigate } from 'react-router-dom';
-import CheckButton from "react-validation/build/button";
-import { isEmail } from "validator";
+import CheckButton from 'react-validation/build/button';
+// import { isEmail } from 'validator';
 
-import AuthService from "../services/auth.service";
+import AuthService from '../services/auth.service';
 
 const required = (value) => {
   if (!value) {
@@ -17,15 +17,15 @@ const required = (value) => {
   }
 };
 
-const validEmail = (value) => {
-  if (!isEmail(value)) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This is not a valid email.
-      </div>
-    );
-  }
-};
+// const validEmail = (value) => {
+//   if (!isEmail(value)) {
+//     return (
+//       <div className="alert alert-danger" role="alert">
+//         This is not a valid email.
+//       </div>
+//     );
+//   }
+// };
 
 const vusername = (value) => {
   if (value.length < 2 || value.length > 20) {
@@ -67,28 +67,38 @@ const vLName = (value) => {
   }
 };
 
+const vNName = (value) => {
+  if (value.length < 2 || value.length > 20) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        Nickname must be between 2 and 20 characters.
+      </div>
+    );
+  }
+};
+
 const Register = () => {
   const form = useRef();
   const checkBtn = useRef();
 
-  const [userName, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [userName, setUsername] = useState('');
+  // const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [successful, setSuccessful] = useState(false);
-  const [message, setMessage] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [profile, setProfile] = useState("");
+  const [message, setMessage] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [nickname, setNickname] = useState('');
 
   const onChangeUsername = (e) => {
     const userName = e.target.value;
     setUsername(userName);
   };
 
-  const onChangeEmail = (e) => {
-    const email = e.target.value;
-    setEmail(email);
-  };
+  // const onChangeEmail = (e) => {
+  //   const email = e.target.value;
+  //   setEmail(email);
+  // };
 
   const onChangePassword = (e) => {
     const password = e.target.value;
@@ -105,28 +115,29 @@ const Register = () => {
     setLastName(lName);
   };
 
-  const onChangeProfile = (e) => {
-    const p = e.target.value;
-    setProfile(p);
+  const onChangeNickname = (e) => {
+    const nname = e.target.value;
+    setNickname(nname);
   };
 
   const handleRegister = (e) => {
     e.preventDefault();
 
-    setMessage("");
+    setMessage('');
     setSuccessful(false);
 
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      AuthService.register(userName, 
-        password, 
-        firstName, 
+      AuthService.register(
+        userName,
+        password,
+        firstName,
         lastName,
-        email, 
-        profile).then(
+        nickname
+      ).then(
         (response) => {
-          setMessage(response.data.message || "Success");
+          setMessage(response.data.message || 'Success');
           setSuccessful(true);
         },
         (error) => {
@@ -145,8 +156,8 @@ const Register = () => {
     }
   };
 
-  if(AuthService.getCurrentUser()) {
-    return <Navigate to="/profile" replace={true} />
+  if (AuthService.getCurrentUser()) {
+    return <Navigate to="/profile" replace={true} />;
   }
 
   return (
@@ -173,7 +184,7 @@ const Register = () => {
                 />
               </div>
 
-              <div className="form-group">
+              {/* <div className="form-group">
                 <label htmlFor="email">Email</label>
                 <Input
                   type="text"
@@ -183,7 +194,7 @@ const Register = () => {
                   onChange={onChangeEmail}
                   validations={[required, validEmail]}
                 />
-              </div>
+              </div> */}
 
               <div className="form-group">
                 <label htmlFor="password">Password</label>
@@ -222,13 +233,14 @@ const Register = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="profile">Profile</label>
+                <label htmlFor="nickname">Nickname</label>
                 <Input
-                  type="profile"
+                  type="nickname"
                   className="form-control"
-                  name="profile"
-                  value={profile}
-                  onChange={onChangeProfile}
+                  name="nickname"
+                  value={nickname}
+                  onChange={onChangeNickname}
+                  validations={[vNName]}
                 />
               </div>
 
@@ -242,7 +254,7 @@ const Register = () => {
             <div className="form-group">
               <div
                 className={
-                  successful ? "alert alert-success" : "alert alert-danger"
+                  successful ? 'alert alert-success' : 'alert alert-danger'
                 }
                 role="alert"
               >
@@ -250,7 +262,7 @@ const Register = () => {
               </div>
             </div>
           )}
-          <CheckButton style={{ display: "none" }} ref={checkBtn} />
+          <CheckButton style={{ display: 'none' }} ref={checkBtn} />
         </Form>
       </div>
     </div>
