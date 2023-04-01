@@ -10,6 +10,7 @@ from errors.main import ExtendableError
 from errors.internalServerError import InternalServerError
 from errors.invalidToken import InvalidJwtError
 from errors.userNotFound import UserNotFound
+from fastapi.middleware.cors import CORSMiddleware
 
 
 load_dotenv()
@@ -20,6 +21,15 @@ db = Database()
 
 AuthService = authService.AuthService(db)
 RecipeService = recipeService.RecipeService(db)
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/signup")
@@ -32,6 +42,7 @@ async def signupHandler(registrationData: authService.UserRegistration):
             raise InternalServerError()
         raise e
 
+
 @app.post("/login")
 async def loginHandler(loginData: authService.LoginForm):
     try:
@@ -42,10 +53,11 @@ async def loginHandler(loginData: authService.LoginForm):
             raise InternalServerError()
         raise e
 
+
 @app.middleware("http")
 async def AuthMiddleWare(request: Request, call_next):
     try:
-        if(request.url.path not in ['/signup', '/login']):
+        if (request.url.path not in ['/signup', '/login']):
             authHeader = request.headers.get('authorization')
             if authHeader is None:
                 raise InvalidJwtError()
@@ -62,23 +74,26 @@ async def AuthMiddleWare(request: Request, call_next):
             ex = InternalServerError()
             return JSONResponse(
                 status_code=int(ex.code),
-                content={'info': ex.info, 'code': int(ex.code), 'name': ex.name}
+                content={'info': ex.info, 'code': int(
+                    ex.code), 'name': ex.name}
             )
         return JSONResponse(
             status_code=int(e.code),
             content={'info': e.info, 'code': int(e.code), 'name': e.name}
         )
-        
+
+
 @app.get("/user")
 async def getUser(request: Request):
     try:
-        if(request.state.user == None):
+        if (request.state.user == None):
             raise UserNotFound()
         return request.state.user
     except Exception as e:
         if not isinstance(e, ExtendableError):
             raise InternalServerError()
         raise e
+
 
 @app.post("/recipe")
 async def postRecipe(request: Request, recipeToAdd: recipeService.InsertRecipe):
@@ -93,6 +108,7 @@ async def postRecipe(request: Request, recipeToAdd: recipeService.InsertRecipe):
             raise InternalServerError()
         raise e
 
+
 @app.exception_handler(ExtendableError)
 async def exceptionHandler(request: Request, exc: ExtendableError):
     return JSONResponse(
@@ -102,4 +118,4 @@ async def exceptionHandler(request: Request, exc: ExtendableError):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=int(os.environ['PORT']))
+    uvicorn.run(app, host="127.0.0.1", port=3000)
