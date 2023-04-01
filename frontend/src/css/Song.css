@@ -1,0 +1,46 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.song-page {
+    background-color: white;
+    padding: 50px 20px 20px 20px;
+    color: black;
+    width: 96%;
+    margin: 0 auto 0 auto;
+}
+.song-page-header button{
+    color:white; 
+    background-color: rgb(25, 25, 214);
+    font-weight: bold;
+    margin-right: 20px;
+    margin-top: 30px;
+    padding: 5px;
+    border-radius: 3px;
+}
+.song-page-header hr {
+    clear:both;
+    display:block;
+    width: 96%;               
+    background-color:rgb(25, 25, 214);
+    height: 2px;
+    margin-top: 10px;
+}
+.song {
+    margin-bottom: 10px;
+    background-color: rgb(245, 245, 245);
+    width: 96%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-weight:500;
+}
+.album-img {
+    width: 100px;
+    margin-right: 20px;
+}
+.song-rating {
+    position: absolute;
+    right: 30px;
+}
