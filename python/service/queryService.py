@@ -19,7 +19,6 @@ class QueryService():
         try:
             queryResult = db.query(
                 ("SELECT title FROM song NATURAL JOIN songGenre WHERE genre = %s"), [userQuery.query])
-            print(queryResult)
             return {'songs': queryResult['result']}
         except Exception as e:
             raise internalServerError.InternalServerError()

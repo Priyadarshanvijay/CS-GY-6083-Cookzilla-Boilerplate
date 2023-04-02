@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from db.main import Database
 from dotenv import load_dotenv
 import service.authService as authService
-import service.recipeService as recipeService
+import service.accountService as accountService
 import service.queryService as queryService
 from errors.main import ExtendableError
 from errors.internalServerError import InternalServerError
@@ -20,7 +20,7 @@ app = FastAPI()
 db = Database()
 
 AuthService = authService.AuthService(db)
-RecipeService = recipeService.RecipeService(db)
+AccountService = accountService.AccountService(db)
 QueryService = queryService.QueryService(db)
 
 origins = ["*"]
@@ -62,7 +62,7 @@ async def loginHandler(loginData: authService.LoginForm):
 # }
 
 
-@app.get("/querysongs")
+@app.post("/querysongs")
 async def songQueryHandler(queryData: queryService.Query):
     try:
         results = QueryService.generalQuery(queryData)
@@ -127,13 +127,14 @@ async def getUser(request: Request):
         raise e
 
 
-@app.post("/recipe")
-async def postRecipe(request: Request, recipeToAdd: recipeService.InsertRecipe):
+@app.post("/review/song")  # post a new song review
+async def postSongReview(request: Request, songToAdd: accountService.InsertSongReview):
     try:
-        postedBy = request.state.user['userName']
-        recipeToAdd.postedBy = postedBy
-        postedRecipe = RecipeService.insertRecipe(recipeToAdd)
-        return postedRecipe
+        postedBy = request.state.user['username']
+        songToAdd.username = postedBy
+        print(postedBy)
+        postedSong = AccountService.insertSongReview(songToAdd)
+        return postedSong
     except Exception as e:
         print(e)
         if not isinstance(e, ExtendableError):

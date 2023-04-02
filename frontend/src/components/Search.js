@@ -16,7 +16,7 @@ const required = (value) => {
   }
 };
 
-export default function Search({ onResults }) {
+export default function Search(props) {
   const [query, setQuery] = useState('');
   const [rating, setRating] = useState('');
   const form = useRef();
@@ -34,10 +34,9 @@ export default function Search({ onResults }) {
         }),
       });
       const data = await response.json();
-      onResults(data);
-      return data;
+      props.onData(data['songs']);
     } catch (error) {
-      // handle error
+      console.error(error);
     }
   };
 
@@ -63,8 +62,6 @@ export default function Search({ onResults }) {
         type="number"
         name="rating"
         placeholder="Filter by average rating"
-        min="1"
-        max="5"
         value={rating}
         onChange={(e) => setRating(e.target.value)}
         className="rating-input"
