@@ -89,7 +89,8 @@ async def newItemsHandler(username: str = Query(...)):
 @app.middleware("http")
 async def AuthMiddleWare(request: Request, call_next):
     try:
-        if (request.url.path not in ['/signup', '/login', '/querysongs', '/newitems']):
+        # added additional routes for testing purposes
+        if (request.url.path not in ['/signup', '/login', '/querysongs', '/newitems', '/reviewsong', '/ratesong']):
             authHeader = request.headers.get('authorization')
             if authHeader is None:
                 raise InvalidJwtError()
@@ -127,13 +128,35 @@ async def getUser(request: Request):
         raise e
 
 
-@app.post("/review/song")  # post a new song review
+@app.post("/reviewsong")  # post a new song review
 async def postSongReview(request: Request, songToAdd: accountService.InsertSongReview):
     try:
-        postedBy = request.state.user['username']
-        songToAdd.username = postedBy
-        print(postedBy)
+        # reads the request body and returns a dictionary with the parsed JSON data
+        data = await request.json()
+        songToAdd.username = data["username"]
+        if ("songID" in data):
+            songToAdd.songID = data["songID"]
+        songToAdd.songTitle = data["songTitle"]
+        songToAdd.reviewText = data["reviewText"]
         postedSong = AccountService.insertSongReview(songToAdd)
+        return postedSong
+    except Exception as e:
+        print(e)
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
+@app.post("/ratesong")  # post a new song rating
+async def postSongRating(request: Request, songToAdd: accountService.InsertSongRating):
+    try:
+        data = await request.json()
+        songToAdd.username = data["username"]
+        if ("songID" in data):
+            songToAdd.songID = data["songID"]
+        songToAdd.songTitle = data["songTitle"]
+        songToAdd.rating = data["rating"]
+        postedSong = AccountService.insertSongRating(songToAdd)
         return postedSong
     except Exception as e:
         print(e)
