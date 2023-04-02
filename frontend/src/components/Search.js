@@ -61,6 +61,8 @@ export default function Search(props) {
       <Input
         type="number"
         name="rating"
+        min="1"
+        max="5"
         placeholder="Filter by average rating"
         value={rating}
         onChange={(e) => setRating(e.target.value)}

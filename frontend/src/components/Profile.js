@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import AuthService from '../services/auth.service';
+import Posts from './Posts';
 
 const Profile = () => {
   const currentUser = AuthService.getCurrentUser();
@@ -16,13 +17,7 @@ const Profile = () => {
           <strong>{currentUser.username}</strong> Profile
         </h3>
       </header>
-      <p>
-        <strong>Token:</strong> {currentUser.token.substring(0, 20)} ...{' '}
-        {currentUser.token.substr(currentUser.token.length - 20)}
-      </p>
-      <p>
-        <strong>userName: </strong> {currentUser.username}
-      </p>
+      <Posts></Posts>
       {/* <p>
         <strong>Nickname: </strong> {currentUser.nickname}
       </p> */}

@@ -1,0 +1,16 @@
+.Post {
+  background-color: white;
+  width: 80%;
+  margin: auto;
+  padding: 40px 20px 40px 20px;
+  margin: 20px auto 20px auto;
+}
+.byAuthor {
+  color: grey;
+}
+.byAuthor span {
+  margin-right: 5px;
+}
+.authorName, .tag {
+    color: blue;
+}
