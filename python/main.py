@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Query
 import uvicorn
 import os
 from fastapi.responses import JSONResponse
@@ -6,12 +6,12 @@ from db.main import Database
 from dotenv import load_dotenv
 import service.authService as authService
 import service.recipeService as recipeService
+import service.queryService as queryService
 from errors.main import ExtendableError
 from errors.internalServerError import InternalServerError
 from errors.invalidToken import InvalidJwtError
 from errors.userNotFound import UserNotFound
 from fastapi.middleware.cors import CORSMiddleware
-
 
 load_dotenv()
 
@@ -21,6 +21,8 @@ db = Database()
 
 AuthService = authService.AuthService(db)
 RecipeService = recipeService.RecipeService(db)
+QueryService = queryService.QueryService(db)
+
 origins = ["*"]
 
 app.add_middleware(
@@ -53,11 +55,41 @@ async def loginHandler(loginData: authService.LoginForm):
             raise InternalServerError()
         raise e
 
+# pass search term in req body, e.g.,
+# {
+#   "query": "Jazz",
+#   "rating": "1"
+# }
+
+
+@app.get("/querysongs")
+async def songQueryHandler(queryData: queryService.Query):
+    try:
+        results = QueryService.generalQuery(queryData)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+# attach username as query string, for example http://localhost:3000/newitems?username=Yuzu66
+
+
+@app.get("/newitems")
+async def newItemsHandler(username: str = Query(...)):
+    try:
+        results = QueryService.newItems(username)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
 
 @app.middleware("http")
 async def AuthMiddleWare(request: Request, call_next):
     try:
-        if (request.url.path not in ['/signup', '/login']):
+        if (request.url.path not in ['/signup', '/login', '/querysongs', '/newitems']):
             authHeader = request.headers.get('authorization')
             if authHeader is None:
                 raise InvalidJwtError()
