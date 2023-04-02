@@ -3,18 +3,19 @@ from errors import internalServerError
 import logging as logger
 from db.main import Database
 from datetime import datetime
+from typing import Optional
 
 
 class InsertSongReview(BaseModel):
     username: str
-    songID: str = ''
+    songID: Optional[str] = None
     songTitle: str
     reviewText: str
 
 
 class InsertSongRating(BaseModel):
     username: str
-    songID: str = ''
+    songID: Optional[str] = None
     songTitle: str
     rating: int
 

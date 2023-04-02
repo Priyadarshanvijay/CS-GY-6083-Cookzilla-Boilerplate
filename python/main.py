@@ -138,6 +138,7 @@ async def postSongReview(request: Request, songToAdd: accountService.InsertSongR
             songToAdd.songID = data["songID"]
         songToAdd.songTitle = data["songTitle"]
         songToAdd.reviewText = data["reviewText"]
+        print(songToAdd)
         postedSong = AccountService.insertSongReview(songToAdd)
         return postedSong
     except Exception as e:

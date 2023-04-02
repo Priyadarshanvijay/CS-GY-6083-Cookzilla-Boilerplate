@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import AuthService from '../services/auth.service';
 import Posts from './Posts';
+import Reviews from './Reviews';
 
 const Profile = () => {
   const currentUser = AuthService.getCurrentUser();
@@ -17,10 +18,11 @@ const Profile = () => {
           <strong>{currentUser.username}</strong> Profile
         </h3>
       </header>
+
+      {/* items of interest */}
       <Posts></Posts>
-      {/* <p>
-        <strong>Nickname: </strong> {currentUser.nickname}
-      </p> */}
+      {/* reviews and ratings */}
+      <Reviews></Reviews>
     </div>
   );
 };
