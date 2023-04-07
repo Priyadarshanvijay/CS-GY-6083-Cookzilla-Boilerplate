@@ -96,10 +96,6 @@ export default function Reviews() {
           <h3>Your Past Reviews</h3>
           TODO
         </div>
-        <div className="ratings">
-          <h3>Your Past Ratings</h3>
-          TODO
-        </div>
       </div>
     </div>
   );
