@@ -1,0 +1,62 @@
+/* Style for the playlist component */
+.playlist {
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin: 20px;
+  }
+  
+  /* Style for playlist name and description */
+  .playlist-info {
+    margin-bottom: 10px;
+  }
+  
+  .playlist-name {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .playlist-description {
+    font-size: 14px;
+    margin-top: 5px;
+  }
+  
+  /* Style for playlist songs */
+  .playlist-songs {
+    margin-top: 20px;
+  }
+  
+  .playlist-song {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .song-title {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .song-artist {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* Style for playlist options */
+  .playlist-options {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  
+  .playlist-option {
+    margin-right: 20px;
+  }
+  
+  .playlist-option:last-child {
+    margin-right: 0;
+  }
+  

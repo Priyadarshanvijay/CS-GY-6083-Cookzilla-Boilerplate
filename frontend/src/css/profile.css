@@ -1,0 +1,51 @@
+/* Set default font and background color */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+  }
+  
+  /* Style for navbar */
+  .nav-bar {
+    background-color: #333;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  
+  /* Style for navbar links */
+  .nav-item {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .nav-link {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+  .nav-link:hover {
+    background-color: #111;
+  }
+  
+  .active {
+    background-color: #4CAF50;
+  }
+  
+  /* Style for components */
+  .component {
+    /* display: none; */
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* .component.active {
+    display: block;
+  } */

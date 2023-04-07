@@ -5,6 +5,9 @@
   padding: 40px 20px 40px 20px;
   margin: 20px auto 20px auto;
 }
+.newitems h4{
+  text-align: center;
+}
 .byAuthor {
   color: grey;
 }
