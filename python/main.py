@@ -87,8 +87,19 @@ async def newItemsHandler(username: str = Query(...)):
         raise e
 
 
-# http://localhost:3000/getfriends?username=Yuzu66 to get all friend requests for user Yuzu66
 @app.get("/getfriends")
+async def getFriends(username: str = Query(...)):
+    try:
+        results = FriendReqService.getAllRFriends(username)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
+# http://localhost:3000/getfriends?username=Yuzu66 to get all friend requests for user Yuzu66
+@app.get("/getfriendsreqs")
 async def getFriends(username: str = Query(...)):
     try:
         results = FriendReqService.getAllRequests(username)

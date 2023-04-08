@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 
-export default function AddFriend() {
-  const [searchTerm, setSearchTerm] = useState('');
+export default function AddFriend(props) {
+  const [newFriend, setNewFriends] = useState('');
 
   const handleSearchInputChange = (event) => {
-    setSearchTerm(event.target.value);
+    setNewFriends(event.target.value);
   };
 
   return (
@@ -17,11 +17,13 @@ export default function AddFriend() {
         <Input
           type="text"
           placeholder="Search by username"
-          value={searchTerm}
+          value={newFriend}
           onChange={handleSearchInputChange}
         />
         <br />
-        <button type="submit">Submit </button>
+        <button type="submit" onClick={() => props.onAddFriends(newFriend)}>
+          Submit{' '}
+        </button>
       </Form>
     </div>
   );

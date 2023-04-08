@@ -18,6 +18,22 @@ class FriendReqService():
     def __init__(self, db: Database):
         self.Database = db
 
+    # get all friends of usr_from
+    # get all pending friend requests for user_from
+    def getAllRFriends(self, querydata: str) -> list[str]:
+        db = self.Database
+        try:
+            requests = db.query(
+                ("SELECT user1, user2 FROM friend WHERE ((user2 = %s OR user1 = %s) AND acceptStatus = 'Accepted')"), [querydata, querydata])
+
+            # return a list of the usernames
+            return [r['user1'] if r['user1'] != querydata else r['user2'] for r in requests['result']]
+
+        except Exception as e:
+            logger.error("Unable to get all friend requests")
+            logger.error(e)
+            raise internalServerError.InternalServerError()
+
     # get all pending friend requests for user_from
     def getAllRequests(self, querydata: str) -> list[str]:
         db = self.Database
