@@ -7,6 +7,7 @@ import Reviews from './Reviews';
 import '../css/profile.css';
 import Account from './Account';
 import Playlist from './Playlist';
+import RatingSongs from './RatingSongs';
 
 const Profile = () => {
   const currentUser = AuthService.getCurrentUser();
@@ -63,8 +64,10 @@ const Profile = () => {
       {activeNavItem === 'posts' && <Posts />}
       {activeNavItem == 'friends' && <FriendRequests />}
       {activeNavItem == 'reviews' && <Reviews />}
+      {activeNavItem == 'reviews' && <RatingSongs />}
       {activeNavItem == 'account' && <Account />}
       {activeNavItem == 'playlists' && <Playlist />}
+      
     </div>
   );
 };
