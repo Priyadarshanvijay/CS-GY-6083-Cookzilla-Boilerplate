@@ -5,12 +5,13 @@ const API_URL = 'http://localhost:3000/';
 
 export default function Posts() {
   const [data, setData] = useState([]);
-  //   const currentUser = AuthService.getCurrentUser();
-  //   const username = currentUser.username;
-  const username = 'Yuzu66'; //hardcoding it just for testing purposes
+  const currentUser = AuthService.getCurrentUser();
+  const username = currentUser.username;
+  // const username = 'Yuzu66'; //hardcoding it just for testing purposes
+
   const fetchData = async (username) => {
     try {
-      const response = await fetch(API_URL + 'newitems?username=' + username, {
+      const response = await fetch(API_URL + `newitems?username=${username}`, {
         method: 'GET',
       });
       const result = await response.json();
@@ -26,7 +27,11 @@ export default function Posts() {
 
   return (
     <div className="newitems">
-      <h4>You might find these new reviews interesting: </h4>
+      {data.length === 0 ? (
+        <h4>It looks like you are all caught up! </h4>
+      ) : (
+        <h4>You might find these new reviews interesting: </h4>
+      )}
       {data.map((item) => (
         <Post
           reviewedItem={item.reviewedItem}

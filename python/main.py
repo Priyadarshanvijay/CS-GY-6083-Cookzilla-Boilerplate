@@ -98,7 +98,7 @@ async def getFriends(username: str = Query(...)):
         raise e
 
 
-# http://localhost:3000/getfriends?username=Yuzu66 to get all friend requests for user Yuzu66
+
 @app.get("/getfriendsreqs")
 async def getFriends(username: str = Query(...)):
     try:
@@ -136,7 +136,7 @@ async def sendFriendReq(queryData: friendReqService.friendReq):
 async def AuthMiddleWare(request: Request, call_next):
     try:
         # added additional routes for testing purposes
-        if (request.url.path not in ['/signup', '/login', '/sendreq', '/querysongs', '/newitems', '/reviewsong', '/ratesong', '/getfriends', '/managereqs']):
+        if (request.url.path not in ['/signup', '/login', '/sendreq', '/getfriendsreqs', '/querysongs', '/newitems', '/reviewsong', '/ratesong', '/getfriends', '/managereqs']):
             authHeader = request.headers.get('authorization')
             if authHeader is None:
                 raise InvalidJwtError()

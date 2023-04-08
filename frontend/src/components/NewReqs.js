@@ -16,7 +16,7 @@ export default function NewReqs(props) {
           <li className="friend-request">
             <div className="friend-info">
               <div className="friend-name">
-                {request.name} <span>sent on {request.date}</span>
+                {request[0]} <span> Request sent on {request[1]}</span>
               </div>
             </div>
             <div className="friend-actions">

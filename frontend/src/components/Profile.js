@@ -11,7 +11,7 @@ import RatingSongs from './RatingSongs';
 
 const Profile = () => {
   const currentUser = AuthService.getCurrentUser();
-  const [activeNavItem, setActiveNavItem] = useState('posts');
+  const [activeNavItem, setActiveNavItem] = useState('');
 
   const handleNavItemClick = (navItem) => {
     setActiveNavItem(navItem);

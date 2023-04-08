@@ -13,35 +13,29 @@ import '../css/Reviews.css';
 //   return <span className="song-rating">{filledStar(val)}</span>;
 // }
 
-
 export default function RatingSongs() {
   return (
-    <div className='review-rate-container'>
-      <div className='review-rate'>
+    <div className="review-rate-container">
+      <div className="review-rate">
         <span>Create New Rating</span>
-          <label>
-            Song Title:
-          </label>
-          <input 
-            name='SongTitle'
-            type='text' 
-            placeholder='Enter song title here'>
-          </input>
-          <br/>
-          <label for='Star'>
-            Rating:
-          </label>
-          <select name='stars' id='Star' style={{padding: 10,}}>
-            <option value='1'>1</option>
-            <option value='2'>2</option>
-            <option value='3'>3</option>
-            <option value='4'>4</option>
-            <option value='5'>5</option>
-          </select><br/>
-          <br/>
-          <button type='submit'>
-            Submit Rating
-          </button>
+        <label>Song Title:</label>
+        <input
+          name="SongTitle"
+          type="text"
+          placeholder="Enter song title here"
+        ></input>
+        <br />
+        <label for="Star">Rating:</label>
+        <select name="stars" id="Star" style={{ padding: 10 }}>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        <br />
+        <br />
+        <button type="submit">Submit Rating</button>
       </div>
       <div className="history">
         <div className="ratings">
@@ -50,6 +44,5 @@ export default function RatingSongs() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

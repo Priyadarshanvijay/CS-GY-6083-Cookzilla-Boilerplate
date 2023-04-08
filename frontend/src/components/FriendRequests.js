@@ -12,9 +12,16 @@ export default function FriendRequests() {
   const [friends, setFriends] = useState([]);
   const [reqs, setReqs] = useState([]);
 
-  // fetch friend requests from backend
+  // fetch friend and friend requests from backend
   useEffect(() => {
-    fetch(API_URL + `getreqs?username=${currentUser.username}`, {
+    fetch(API_URL + `getfriends?username=${currentUser.username}`, {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((data) => setFriends(data))
+      .catch((error) => console.log(error));
+
+    fetch(API_URL + `getfriendsreqs?username=${currentUser.username}`, {
       method: 'GET',
     })
       .then((response) => response.json())
@@ -47,19 +54,9 @@ export default function FriendRequests() {
       .catch((error) => console.log(error));
   };
 
-  // fetch friend data from backend
-  useEffect(() => {
-    fetch(API_URL + `getfriends?username=${currentUser.username}`, {
-      method: 'GET',
-    })
-      .then((response) => response.json())
-      .then((data) => setFriends(data))
-      .catch((error) => console.log(error));
-  }, []);
-
   // handle adding a new friend
   const handleAddFriend = (newFriend) => {
-    fetch(API_URL + 'managereqs', {
+    fetch(API_URL + 'sendreq', {
       method: 'POST',
       body: JSON.stringify({
         usr_from: currentUser.username,
@@ -71,7 +68,8 @@ export default function FriendRequests() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setFriends([...friends, data]);
+        console.log(data);
+        // setFriends([...friends, data]);
       })
       .catch((error) => console.log(error));
   };
