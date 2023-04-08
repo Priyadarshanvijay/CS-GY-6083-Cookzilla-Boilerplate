@@ -13,8 +13,40 @@ export default function FriendRequests() {
 
   return (
     <div className="friend-request-window">
+      <div className="new-reqs-container">
+        <h4>New Friend Requests: </h4>
+        <ul className="friend-list">
+          <li className="friend-request">
+            <div className="friend-info">
+              <div className="friend-name">
+                John Doe
+                <span> sent on 2023-04-03</span>
+              </div>
+            </div>
+            <div className="friend-actions">
+              <button className="add-friend-btn">Add Friend</button>
+              <button className="view-request-btn">
+                Reject friend request
+              </button>
+            </div>
+          </li>
+          <li className="friend-request">
+            <div className="friend-info">
+              <div className="friend-name">
+                Jane Smith <span>sent on 2023-04-03</span>
+              </div>
+            </div>
+            <div className="friend-actions">
+              <button className="add-friend-btn">Add Friend</button>
+              <button className="view-request-btn">
+                Reject friend request
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
       <div className="search-container">
-        <h2>Add Friends</h2>
+        <h4>Add New Friends: </h4>
         <Form>
           <label htmlFor="username"></label>
           <Input
@@ -23,33 +55,25 @@ export default function FriendRequests() {
             value={searchTerm}
             onChange={handleSearchInputChange}
           />
+          <br />
+          <button type="submit">Submit </button>
         </Form>
       </div>
-      <h2>Friend Requests</h2>
-      <ul className="friend-list">
-        <li className="friend-request">
-          <div className="friend-info">
-            <img src="https://example.com/avatar1.jpg" alt="Avatar" />
-            <div className="friend-name">John Doe</div>
-          </div>
-          <div className="friend-actions">
-            <button className="view-friend-btn">View Profile</button>
-            <button className="add-friend-btn">Add Friend</button>
-            <button className="view-request-btn">Reject friend request</button>
-          </div>
-        </li>
-        <li className="friend-request">
-          <div className="friend-info">
-            <img src="https://example.com/avatar2.jpg" alt="Avatar" />
-            <div className="friend-name">Jane Smith</div>
-          </div>
-          <div className="friend-actions">
-            <button className="view-friend-btn">View Profile</button>
-            <button className="add-friend-btn">Add Friend</button>
-            <button className="view-request-btn">Reject friend request</button>
-          </div>
-        </li>
-      </ul>
+      <div className="friends-container">
+        <h4>Your Friend List: </h4>
+        <ul className="friend-list">
+          <li className="friend">
+            <div className="friend-info">
+              <div className="friend-name">John Doe</div>
+            </div>
+          </li>
+          <li className="friend">
+            <div className="friend-info">
+              <div className="friend-name">Jame Smith</div>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }
