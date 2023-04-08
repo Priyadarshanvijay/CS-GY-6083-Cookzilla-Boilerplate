@@ -26,7 +26,7 @@ export default function Posts() {
 
   return (
     <div className="newitems">
-      <h4>You might find new reviews interesting: </h4>
+      <h4>You might find these new reviews interesting: </h4>
       {data.map((item) => (
         <Post
           reviewedItem={item.reviewedItem}
