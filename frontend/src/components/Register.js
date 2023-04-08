@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
+import React, { useEffect, useState, useRef } from 'react';
+import Form from 'react-validation/build/form';
+import Input from 'react-validation/build/input';
 import { Navigate } from 'react-router-dom';
-import CheckButton from "react-validation/build/button";
-import { isEmail } from "validator";
+import CheckButton from 'react-validation/build/button';
+import { isEmail } from 'validator';
 
-import AuthService from "../services/auth.service";
+import AuthService from '../services/auth.service';
 
 const required = (value) => {
   if (!value) {
@@ -71,14 +71,14 @@ const Register = () => {
   const form = useRef();
   const checkBtn = useRef();
 
-  const [userName, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [userName, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [successful, setSuccessful] = useState(false);
-  const [message, setMessage] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [profile, setProfile] = useState("");
+  const [message, setMessage] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [profile, setProfile] = useState('');
 
   const onChangeUsername = (e) => {
     const userName = e.target.value;
@@ -113,20 +113,22 @@ const Register = () => {
   const handleRegister = (e) => {
     e.preventDefault();
 
-    setMessage("");
+    setMessage('');
     setSuccessful(false);
 
     form.current.validateAll();
 
     if (checkBtn.current.context._errors.length === 0) {
-      AuthService.register(userName, 
-        password, 
-        firstName, 
+      AuthService.register(
+        userName,
+        password,
+        firstName,
         lastName,
-        email, 
-        profile).then(
+        email,
+        profile
+      ).then(
         (response) => {
-          setMessage(response.data.message || "Success");
+          setMessage(response.data.message || 'Success');
           setSuccessful(true);
         },
         (error) => {
@@ -145,8 +147,8 @@ const Register = () => {
     }
   };
 
-  if(AuthService.getCurrentUser()) {
-    return <Navigate to="/profile" replace={true} />
+  if (AuthService.getCurrentUser()) {
+    return <Navigate to="/profile" replace={true} />;
   }
 
   return (
@@ -242,7 +244,7 @@ const Register = () => {
             <div className="form-group">
               <div
                 className={
-                  successful ? "alert alert-success" : "alert alert-danger"
+                  successful ? 'alert alert-success' : 'alert alert-danger'
                 }
                 role="alert"
               >
@@ -250,7 +252,7 @@ const Register = () => {
               </div>
             </div>
           )}
-          <CheckButton style={{ display: "none" }} ref={checkBtn} />
+          <CheckButton style={{ display: 'none' }} ref={checkBtn} />
         </Form>
       </div>
     </div>
