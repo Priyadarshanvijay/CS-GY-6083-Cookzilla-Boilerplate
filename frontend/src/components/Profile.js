@@ -62,12 +62,11 @@ const Profile = () => {
       </nav>
 
       {activeNavItem === 'posts' && <Posts />}
-      {activeNavItem == 'friends' && <FriendRequests />}
-      {activeNavItem == 'reviews' && <Reviews />}
-      {activeNavItem == 'reviews' && <RatingSongs />}
-      {activeNavItem == 'account' && <Account />}
-      {activeNavItem == 'playlists' && <Playlist />}
-      
+      {activeNavItem === 'friends' && <FriendRequests />}
+      {activeNavItem === 'reviews' && <Reviews />}
+      {activeNavItem === 'reviews' && <RatingSongs />}
+      {activeNavItem === 'account' && <Account />}
+      {activeNavItem === 'playlists' && <Playlist />}
     </div>
   );
 };

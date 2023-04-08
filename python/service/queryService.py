@@ -34,3 +34,4 @@ class QueryService():
         except Exception as e:
             print(e)
             raise internalServerError.InternalServerError()
+    

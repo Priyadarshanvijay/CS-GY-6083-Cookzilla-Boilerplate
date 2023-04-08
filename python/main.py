@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import service.authService as authService
 import service.accountService as accountService
 import service.queryService as queryService
+import service.friendReqService as friendReqService
 from errors.main import ExtendableError
 from errors.internalServerError import InternalServerError
 from errors.invalidToken import InvalidJwtError
@@ -22,7 +23,7 @@ db = Database()
 AuthService = authService.AuthService(db)
 AccountService = accountService.AccountService(db)
 QueryService = queryService.QueryService(db)
-
+FriendReqService = friendReqService.FriendReqService(db)
 origins = ["*"]
 
 app.add_middleware(
@@ -72,7 +73,7 @@ async def songQueryHandler(queryData: queryService.Query):
             raise InternalServerError()
         raise e
 
-# attach username as query string, for example http://localhost:3000/newitems?username=Yuzu66
+# attach username as query string, for example http://localhost:3000/newitems?username=Yuzu66 to get all new items for user Yuzu66
 
 
 @app.get("/newitems")
@@ -86,11 +87,45 @@ async def newItemsHandler(username: str = Query(...)):
         raise e
 
 
+# http://localhost:3000/getfriends?username=Yuzu66 to get all friend requests for user Yuzu66
+@app.get("/getfriends")
+async def getFriends(username: str = Query(...)):
+    try:
+        results = FriendReqService.getAllRequests(username)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
+@app.post("/managereqs")
+async def manageFriendsReqs(queryData: friendReqService.friendReq):
+    try:
+        results = FriendReqService.manageFriendRequests(queryData)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
+@app.post("/sendreq")
+async def sendFriendReq(queryData: friendReqService.friendReq):
+    try:
+        results = FriendReqService.issueFriendRequest(queryData)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
 @app.middleware("http")
 async def AuthMiddleWare(request: Request, call_next):
     try:
         # added additional routes for testing purposes
-        if (request.url.path not in ['/signup', '/login', '/querysongs', '/newitems', '/reviewsong', '/ratesong']):
+        if (request.url.path not in ['/signup', '/login', '/sendreq', '/querysongs', '/newitems', '/reviewsong', '/ratesong', '/getfriends', '/managereqs']):
             authHeader = request.headers.get('authorization')
             if authHeader is None:
                 raise InvalidJwtError()
@@ -116,7 +151,7 @@ async def AuthMiddleWare(request: Request, call_next):
         )
 
 
-@app.get("/user")
+@app.get("/")
 async def getUser(request: Request):
     try:
         if (request.state.user == None):

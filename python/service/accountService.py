@@ -25,6 +25,7 @@ class AccountService():
     def __init__(self, db: Database):
         self.Database = db
 
+    # insert a new song review
     def insertSongReview(self, review: InsertSongReview):
         db = self.Database
         try:
@@ -48,6 +49,7 @@ class AccountService():
             logger.error(e)
             raise internalServerError.InternalServerError()
 
+    # insert a new song rating
     def insertSongRating(self, review: InsertSongRating):
         db = self.Database
         try:
