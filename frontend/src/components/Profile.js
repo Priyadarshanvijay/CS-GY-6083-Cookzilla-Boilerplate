@@ -5,7 +5,6 @@ import FriendRequests from './FriendRequests';
 import Posts from './Posts';
 import Reviews from './Reviews';
 import '../css/profile.css';
-import Account from './Account';
 import Playlist from './Playlist';
 import RatingSongs from './RatingSongs';
 
@@ -47,12 +46,6 @@ const Profile = () => {
             Manage Friend Requests
           </li>
           <li
-            onClick={() => handleNavItemClick('account')}
-            className="nav-link"
-          >
-            Account Info
-          </li>
-          <li
             onClick={() => handleNavItemClick('playlists')}
             className="nav-link"
           >
@@ -65,7 +58,6 @@ const Profile = () => {
       {activeNavItem === 'friends' && <FriendRequests />}
       {activeNavItem === 'reviews' && <Reviews />}
       {activeNavItem === 'reviews' && <RatingSongs />}
-      {activeNavItem === 'account' && <Account />}
       {activeNavItem === 'playlists' && <Playlist />}
     </div>
   );
