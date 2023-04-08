@@ -71,7 +71,7 @@ class FriendReqService():
                     [datetime.now().strftime('%Y-%m-%d %H:%M:%S'), querydata.usr_from,
                      querydata.usr_to, querydata.usr_to, querydata.usr_from]
                 )
-                return {"message": "Friend request rejected"}
+                return querydata.usr_from
 
             # accept friend request
             elif querydata.operation == 'accept':
@@ -80,7 +80,7 @@ class FriendReqService():
                     [datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                      querydata.usr_from, querydata.usr_to, querydata.usr_to, querydata.usr_from]
                 )
-                return {"message": "Friend request accepted"}
+                return querydata.usr_from
 
         except Exception as e:
             logger.error("Unable to accept/reject friend request")

@@ -27,6 +27,7 @@ export default function AddFriend(props) {
     if (ret) {
       timeoutId = setTimeout(() => {
         setRet(0);
+        setNewFriends('');
       }, 5000);
     }
     return () => clearTimeout(timeoutId);
@@ -36,7 +37,7 @@ export default function AddFriend(props) {
     e.preventDefault();
     props.onAddFriend(newFriend);
     console.log('new friend: ' + newFriend);
-    if (ret != '') setRet(1);
+    setRet(1);
   };
 
   return (

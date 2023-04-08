@@ -20,7 +20,9 @@ export default function FriendRequests() {
       .then((response) => response.json())
       .then((data) => setFriends(data))
       .catch((error) => console.log(error));
+  }, []);
 
+  useEffect(() => {
     fetch(API_URL + `getfriendsreqs?username=${currentUser.username}`, {
       method: 'GET',
     })
@@ -46,10 +48,9 @@ export default function FriendRequests() {
       .then((data) => {
         if (userchoice == 'accept') {
           setFriends([...friends, data]);
-        } else if (userchoice == 'reject') {
-          setFriends(friends.filter((friend) => (friend = sender)));
         }
-        setReqs(reqs.filter((r) => r !== sender));
+        setReqs(reqs.filter((r) => r[0] !== sender));
+        return 1;
       })
       .catch((error) => console.log(error));
   };
@@ -69,7 +70,6 @@ export default function FriendRequests() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        // setFriends([...friends, data]);
       })
       .catch((error) => console.log(error));
   };

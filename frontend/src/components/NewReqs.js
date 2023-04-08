@@ -1,11 +1,11 @@
 import React from 'react';
 export default function NewReqs(props) {
-  const handleAccept = (request) => {
-    props.onAcceptOrReject(request, 'accept');
+  const handleAccept = (usr) => {
+    props.onAcceptOrReject(usr, 'accept');
   };
 
-  const handleReject = (request) => {
-    props.onAcceptOrReject(request, 'reject');
+  const handleReject = (usr) => {
+    props.onAcceptOrReject(usr, 'reject');
   };
 
   return (
@@ -22,13 +22,15 @@ export default function NewReqs(props) {
             <div className="friend-actions">
               <button
                 className="add-friend-btn"
-                onClick={() => handleAccept(request)}
+                onClick={() => {
+                  handleAccept(request[0]);
+                }}
               >
                 Add Friend
               </button>
               <button
                 className="view-request-btn"
-                onClick={() => handleReject(request)}
+                onClick={() => handleReject(request[0])}
               >
                 Reject Friend Request
               </button>
