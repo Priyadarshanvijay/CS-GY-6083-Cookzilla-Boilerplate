@@ -27,7 +27,7 @@ class FriendReqService():
                 ("SELECT * FROM friend WHERE ((user2 = %s OR user1 = %s) AND acceptStatus = 'Pending' AND requestSentBy != %s)"), [querydata, querydata, querydata])
 
             # return a list of the usernames that sent friend requests to the user
-            return [(r['user1'] if r['user1'] != querydata else r['user2']) for r in requests['result']]
+            return [((r['user1'], r['createdAt']) if r['user1'] != querydata else (r['user2'], r['createdAt'])) for r in requests['result']]
 
         except Exception as e:
             logger.error("Unable to get all friend requests")

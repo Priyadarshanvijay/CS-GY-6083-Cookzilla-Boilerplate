@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import '../css/Song.css';
-import SongList from './SongList';
 import Search from './Search';
 
 export default function Music() {
@@ -8,6 +7,7 @@ export default function Music() {
   const handleDataFromChild = (data) => {
     setResults(data);
   };
+
   return (
     <div className="song-page">
       <header className="song-page-header">

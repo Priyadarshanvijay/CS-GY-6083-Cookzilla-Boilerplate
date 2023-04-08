@@ -39,19 +39,23 @@ npm start
 9. Open browser and navigate to http://localhost:8081
 
 # FatEar Project Logs: 
-1. login and new user registration page
-2. browse songs and search for songs at /music  
-3. Playsong page -- and provide option to review and rate 
-4. Profile page for registered users 
-   1. account info 
-      user should be able to manage their profile, pwd, and personal info. 
-   2. personal recommendation  
-   3. playlist 
+1. login and new user registration page [x]
+   
+2. browse songs and search for songs at /music  -- backend TODO  
+   1. Find the titles, artists, and albums of songs of a particular genre and/or with an average rating above some threshold and/or by a particular artist, etc.
+     
+3. Profile page for registered users 
+   1. account info -- (optional) 
+      user should be able to manage their profile, pwd, and personal info. (optional)
+   2. playlist -- TODO
       1. create, modify, delete, make public/private, etc. 
-   4. review and rate 
-   5. manage friend requests 
-   6. display new items of interest -- new reviews by friends or followers, new songs by artists 
-
-5. (optional) see friends or followers personal page -- their reviews, ratings, profiles, events, etc. 
+   3. review and rate 
+      1. review [x]
+      2. rate 
+   4. manage friend requests [x] -- need to update frontend 
+      1. accept or reject 
+      2. issue a request to another user 
+   5. display new items of interest -- new reviews by friends or followers, 
+      1. new songs by artists -- TODO update SQL query 
 
 
