@@ -79,7 +79,7 @@ const App = () => {
         )}
       </nav>
 
-      <div className="container mt-3">
+      <div style={{margin: '4rem'}}>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />

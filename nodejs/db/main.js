@@ -4,9 +4,21 @@ const util = require('util');
 let query;
 let poolInitialized = false;
 
-// add table names that match with mysql table names and export it at module.exports
+// table name constants that match table names in mysql
 const UserTable = 'users';
-const RecipeTable = 'Recipe';
+const SongTable = 'song';
+const ArtistTable = 'artist';
+const AlbumTable = 'album';
+const FollowsTable = 'follows';
+const FriendTable = 'friend';
+const ArtistPerformsSongTable = 'artistPerformsSong';
+const RateAlbumTable = 'rateAlbum';
+const ReviewAlbumTable = 'reviewAlbum';
+const RateSongTable = 'rateSong';
+const ReviewSongTable = 'reviewSong';
+const UserFanOfArtistTable = 'userFanOfArtist';
+const SongGenreTable = 'songGenre';
+const SongInAlbumTable = 'songInAlbum';
 
 const initDBConnection = () => {
   const poolWithoutPromise = mysql.createPool({
@@ -33,5 +45,17 @@ module.exports = {
   initDBConnection,
   getDBObject,
   UserTable,
-  RecipeTable,
+  AlbumTable,
+  SongTable,
+  ArtistTable,
+  ArtistPerformsSongTable,
+  FriendTable,
+  FollowsTable,
+  ReviewAlbumTable,
+  ReviewSongTable,
+  RateAlbumTable,
+  RateSongTable,
+  UserFanOfArtistTable,
+  SongGenreTable,
+  SongInAlbumTable,
 };

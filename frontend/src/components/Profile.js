@@ -1,30 +1,35 @@
-import React from "react";
+import React from 'react';
 import { Navigate } from 'react-router-dom';
-import AuthService from "../services/auth.service";
+import AuthService from '../services/auth.service';
 
 const Profile = () => {
   const currentUser = AuthService.getCurrentUser();
 
-  if(!currentUser) {
-    return <Navigate to="/login" replace={true} />
+  if (!currentUser) {
+    return <Navigate to="/login" replace={true} />;
   }
 
   return (
-    <div className="container">
-      <header className="jumbotron">
+    <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+      <header style={{marginBottom: '1rem'}}>
         <h3>
-          <strong>{currentUser.username}</strong> Profile
+          <span>{`${currentUser.username}'s Profile`}</span>
         </h3>
       </header>
       <p>
-        <strong>Token:</strong> {currentUser.token.substring(0, 20)} ...{" "}
-        {currentUser.token.substr(currentUser.token.length - 20)}
+        <strong>Username: </strong> {currentUser.username}
       </p>
       <p>
-        <strong>userName: </strong> {currentUser.userName}
+        <strong>First Name: </strong> {currentUser.fname}
+      </p>
+      <p>
+        <strong>Last Name: </strong> {currentUser.lname}
       </p>
       <p>
         <strong>Email: </strong> {currentUser.email}
+      </p>
+      <p>
+        <strong>Profile: </strong> {currentUser.userProfile}
       </p>
     </div>
   );

@@ -55,8 +55,8 @@ const getUser = async (userName) => {
     const userRows = await db
       .getDBObject()
       .query(
-        'SELECT userName, email, profile, fName, lName FROM ?? where userName = ?',
-        [db.PersonTable, userName]
+        'SELECT username, email, userProfile, fName, lName FROM ?? where userName = ?',
+        [db.UserTable, userName]
       );
     if (userRows.length != 1) {
       throw new Error('User not found');
