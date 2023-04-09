@@ -10,7 +10,11 @@ export default function NewReqs(props) {
 
   return (
     <div className="new-reqs-container">
-      <h4>New Friend Requests:</h4>
+      {props.requests.length === 0 ? (
+        <h4>You don't have any new friend requests </h4>
+      ) : (
+        <h4>You have {props.requests.length} new friend requests: </h4>
+      )}
       <ul className="friend-list">
         {props.requests.map((request) => (
           <li className="friend-request">
