@@ -31,17 +31,14 @@ class QueryService():
             NATURAL LEFT OUTER JOIN rateSong
             NATURAL JOIN songGenre
             NATURAL JOIN artist
-            WHERE (genre = %s
-            AND (fname LIKE %s
-            OR lname LIKE %s))
+            WHERE ((genre = %s) AND (fname = %s OR lname = %s))
             GROUP BY song.songID
             HAVING AVG(rateSong.stars) >= %s)
         '''
-        params = (userQuery.genre, '%{}%'.format(
-            userQuery.artist), '%{}%'.format(userQuery.artist), userQuery.rating)
+
         try:
             queryResult = db.query(
-                query, params)
+                query, [userQuery.genre, userQuery.artist, userQuery.artist, userQuery.rating])
             # print(queryResult)
             return {'songs': queryResult['result']}
         except Exception as e:
