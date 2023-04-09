@@ -145,11 +145,22 @@ async def sendFriendReq(queryData: friendReqService.friendReq):
         raise e
 
 
+@app.get("/pastreviews")
+async def getPastReviews(username: str = Query(...)):
+    try:
+        results = AccountService.getSongReviews(username)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
 @app.middleware("http")
 async def AuthMiddleWare(request: Request, call_next):
     try:
         # added additional routes for testing purposes
-        if (request.url.path not in ['/newsongs', '/songsOfWeek', '/signup', '/login', '/sendreq', '/getfriendsreqs', '/querysongs', '/newitems', '/reviewsong', '/ratesong', '/getfriends', '/managereqs']):
+        if (request.url.path not in ['/pastreviews', '/newsongs', '/songsOfWeek', '/signup', '/login', '/sendreq', '/getfriendsreqs', '/querysongs', '/newitems', '/reviewsong', '/ratesong', '/getfriends', '/managereqs']):
             authHeader = request.headers.get('authorization')
             if authHeader is None:
                 raise InvalidJwtError()
@@ -199,7 +210,7 @@ async def postSongReview(request: Request, songToAdd: accountService.InsertSongR
         songToAdd.reviewText = data["reviewText"]
         print(songToAdd)
         postedSong = AccountService.insertSongReview(songToAdd)
-        return {"songTitle": songToAdd.songTitle, "reviewText": songToAdd.reviewText}
+        return postedSong
     except Exception as e:
         print(e)
         if not isinstance(e, ExtendableError):

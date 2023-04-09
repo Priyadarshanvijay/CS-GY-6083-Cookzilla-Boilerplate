@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import AuthService from '../services/auth.service';
@@ -22,6 +22,22 @@ export default function Reviews() {
   const currentUser = AuthService.getCurrentUser();
   const username = currentUser.username;
   const [success, setSuccess] = useState(false);
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    const getReviews = async () => {
+      try {
+        const response = await fetch(
+          API_URL + `pastreviews?username=${username}`
+        );
+        const data = await response.json();
+        setReviews(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    getReviews();
+  }, []);
 
   const handleSongTitleChange = (event) => {
     setSongTitle(event.target.value);
@@ -39,18 +55,19 @@ export default function Reviews() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username,
-          songTitle,
-          reviewText,
+          username: username,
+          songTitle: songTitle,
+          reviewText: reviewText,
         }),
       });
       if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        setReviews([...reviews, data]);
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
         }, 5000);
-        setSongTitle('');
-        setReviewText('');
       }
     } catch (err) {
       console.error(err);
@@ -60,7 +77,7 @@ export default function Reviews() {
   const handleSubmit = (event) => {
     event.preventDefault();
     //insert entry into db
-    console.log(username, songTitle, reviewText);
+    // console.log(username, songTitle, reviewText);
     postReview(username, songTitle, reviewText);
   };
 
@@ -100,6 +117,22 @@ export default function Reviews() {
           <br />
           <button type="submit">Submit Review</button>
         </Form>
+        {reviews.length > 0 && (
+          <div className="past-reviews">
+            <h2>Your Past Reviews</h2>
+            <ul>
+              {reviews.map((review) => (
+                <li key={review.id}>
+                  <h3>
+                    {review.title}
+                    {review.songTitle}
+                  </h3>
+                  <p>{review.reviewText}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );
