@@ -8,6 +8,7 @@ import service.authService as authService
 import service.accountService as accountService
 import service.queryService as queryService
 import service.friendReqService as friendReqService
+import service.playlistService as playlistService
 from errors.main import ExtendableError
 from errors.internalServerError import InternalServerError
 from errors.invalidToken import InvalidJwtError
@@ -24,6 +25,7 @@ AuthService = authService.AuthService(db)
 AccountService = accountService.AccountService(db)
 QueryService = queryService.QueryService(db)
 FriendReqService = friendReqService.FriendReqService(db)
+PlaylistService = playlistService.PlaylistService(db)
 origins = ["*"]
 
 app.add_middleware(
@@ -33,6 +35,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# authentication routes
 
 
 @app.post("/signup")
@@ -55,6 +59,8 @@ async def loginHandler(loginData: authService.LoginForm):
         if not isinstance(e, ExtendableError):
             raise InternalServerError()
         raise e
+
+# query songs, albums,etc
 
 
 @app.post("/querysongs")
@@ -99,6 +105,70 @@ async def newItemsHandler(username: str = Query(...)):
         if not isinstance(e, ExtendableError):
             raise InternalServerError()
         raise e
+
+# reviews and ratings routes
+
+
+@app.get("/pastreviews")
+async def getPastReviews(username: str = Query(...)):
+    try:
+        results = AccountService.getSongReviews(username)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
+@app.get('/pastratings')
+async def getPastRatings(username: str = Query(...)):
+    try:
+        results = AccountService.getSongRatings(username)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
+@app.post("/reviewsong")  # post a new song review
+async def postSongReview(request: Request, songToAdd: accountService.InsertSongReview):
+    try:
+        # reads the request body and returns a dictionary with the parsed JSON data
+        data = await request.json()
+        songToAdd.username = data["username"]
+        if ("songID" in data):
+            songToAdd.songID = data["songID"]
+        songToAdd.songTitle = data["songTitle"]
+        songToAdd.reviewText = data["reviewText"]
+        print(songToAdd)
+        postedSong = AccountService.insertSongReview(songToAdd)
+        return postedSong
+    except Exception as e:
+        print(e)
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
+@app.post("/ratesong")  # post a new song rating
+async def postSongRating(request: Request, songToAdd: accountService.InsertSongRating):
+    try:
+        data = await request.json()
+        songToAdd.username = data["username"]
+        if ("songID" in data):
+            songToAdd.songID = data["songID"]
+        songToAdd.songTitle = data["songTitle"]
+        songToAdd.rating = data["rating"]
+        postedSong = AccountService.insertSongRating(songToAdd)
+        return postedSong
+    except Exception as e:
+        print(e)
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+# friends and friend requests routes
 
 
 @app.get("/getfriends")
@@ -145,10 +215,13 @@ async def sendFriendReq(queryData: friendReqService.friendReq):
         raise e
 
 
-@app.get("/pastreviews")
-async def getPastReviews(username: str = Query(...)):
+# playlist routes
+
+
+@app.get('/getplaylists')
+async def getPlaylists(username: str = Query(...)):
     try:
-        results = AccountService.getSongReviews(username)
+        results = PlaylistService.getAllPlaylists(username)
         return results
     except Exception as e:
         if not isinstance(e, ExtendableError):
@@ -156,10 +229,43 @@ async def getPastReviews(username: str = Query(...)):
         raise e
 
 
-@app.get('/pastratings')
-async def getPastRatings(username: str = Query(...)):
+@app.get('/getsongsinplaylist')
+async def getSongsInPlaylist(playlistData: playlistService.playlist):
     try:
-        results = AccountService.getSongRatings(username)
+        results = PlaylistService.getSongInPlaylist(playlistData)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
+@app.post('/createplaylist')
+async def createPlaylist(playlistData: playlistService.playlist):
+    try:
+        results = PlaylistService.createPlaylist(playlistData)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
+@app.post('/addtoplaylist')
+async def addToPlaylist(playlistData: playlistService.playlist):
+    try:
+        results = PlaylistService.addSong(playlistData)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
+@app.delete('/deleteplaylist')
+async def deletePlaylist(playlistData: playlistService.playlist):
+    try:
+        results = PlaylistService.deletePlaylist(playlistData)
         return results
     except Exception as e:
         if not isinstance(e, ExtendableError):
@@ -204,44 +310,6 @@ async def getUser(request: Request):
             raise UserNotFound()
         return request.state.user
     except Exception as e:
-        if not isinstance(e, ExtendableError):
-            raise InternalServerError()
-        raise e
-
-
-@app.post("/reviewsong")  # post a new song review
-async def postSongReview(request: Request, songToAdd: accountService.InsertSongReview):
-    try:
-        # reads the request body and returns a dictionary with the parsed JSON data
-        data = await request.json()
-        songToAdd.username = data["username"]
-        if ("songID" in data):
-            songToAdd.songID = data["songID"]
-        songToAdd.songTitle = data["songTitle"]
-        songToAdd.reviewText = data["reviewText"]
-        print(songToAdd)
-        postedSong = AccountService.insertSongReview(songToAdd)
-        return postedSong
-    except Exception as e:
-        print(e)
-        if not isinstance(e, ExtendableError):
-            raise InternalServerError()
-        raise e
-
-
-@app.post("/ratesong")  # post a new song rating
-async def postSongRating(request: Request, songToAdd: accountService.InsertSongRating):
-    try:
-        data = await request.json()
-        songToAdd.username = data["username"]
-        if ("songID" in data):
-            songToAdd.songID = data["songID"]
-        songToAdd.songTitle = data["songTitle"]
-        songToAdd.rating = data["rating"]
-        postedSong = AccountService.insertSongRating(songToAdd)
-        return postedSong
-    except Exception as e:
-        print(e)
         if not isinstance(e, ExtendableError):
             raise InternalServerError()
         raise e

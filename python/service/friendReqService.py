@@ -19,7 +19,6 @@ class FriendReqService():
         self.Database = db
 
     # get all friends of usr_from
-    # get all pending friend requests for user_from
     def getAllRFriends(self, querydata: str) -> list[str]:
         db = self.Database
         try:
