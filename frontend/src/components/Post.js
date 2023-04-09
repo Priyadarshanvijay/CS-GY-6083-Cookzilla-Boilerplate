@@ -3,7 +3,7 @@ import '../css/Post.css';
 //Post Component
 export default function Post({ reviewedItem, author, date, body }) {
   //fetch from db
-    
+
   return (
     <div className="Post">
       <div className="postHeading">

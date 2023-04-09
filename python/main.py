@@ -90,6 +90,17 @@ async def newItemsHandler(username: str = Query(...)):
         raise e
 
 
+@app.get("/newsongs")
+async def newItemsHandler(username: str = Query(...)):
+    try:
+        results = QueryService.newSongs(username)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
 @app.get("/getfriends")
 async def getFriends(username: str = Query(...)):
     try:
@@ -138,7 +149,7 @@ async def sendFriendReq(queryData: friendReqService.friendReq):
 async def AuthMiddleWare(request: Request, call_next):
     try:
         # added additional routes for testing purposes
-        if (request.url.path not in ['/songsOfWeek', '/signup', '/login', '/sendreq', '/getfriendsreqs', '/querysongs', '/newitems', '/reviewsong', '/ratesong', '/getfriends', '/managereqs']):
+        if (request.url.path not in ['/newsongs', '/songsOfWeek', '/signup', '/login', '/sendreq', '/getfriendsreqs', '/querysongs', '/newitems', '/reviewsong', '/ratesong', '/getfriends', '/managereqs']):
             authHeader = request.headers.get('authorization')
             if authHeader is None:
                 raise InvalidJwtError()

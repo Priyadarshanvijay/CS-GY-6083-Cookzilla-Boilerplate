@@ -49,3 +49,24 @@ body {
   /* .component.active {
     display: block;
   } */
+
+  .new-songs {
+    background-color: #fff;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .new-songs h4 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .new-songs span {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1rem;
+    color: #666;
+  }
+  

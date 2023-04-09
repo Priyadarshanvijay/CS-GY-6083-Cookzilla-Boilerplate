@@ -16,7 +16,6 @@ class QueryService():
         self.Database = db
 
     # query for songs
-
     def generalQuery(self, userQuery: Query):
         db = self.Database
         query = '''
@@ -65,8 +64,7 @@ class QueryService():
             print(e)
             raise internalServerError.InternalServerError()
 
-    # return new items of interest, takes in username as query param
-
+    # return new items of interest, takes in username as query parameter
     def newItems(self, username):
         db = self.Database
         try:
@@ -74,6 +72,17 @@ class QueryService():
                 ("SELECT username, title as reviewedItem, reviewText, reviewDate FROM user NATURAL JOIN reviewSong NATURAL JOIN song WHERE (username IN (SELECT user1 from friend WHERE user2 = %s AND acceptStatus = 'Accepted') OR username IN (SELECT user2 FROM friend WHERE user1 = %s AND acceptStatus ='Accepted') OR username IN (SELECT follows FROM follows WHERE follower = %s)) AND reviewDate > (SELECT lastLogin FROM user WHERE username = %s) AND reviewText IS NOT NULL UNION SELECT username, albumID as reviewedItem, reviewText, reviewDate FROM user NATURAL JOIN reviewAlbum WHERE (username IN (SELECT user1 from friend WHERE user2 =%s AND acceptStatus = 'Accepted') OR username IN (SELECT user2 FROM friend WHERE user1 = %s AND acceptStatus ='Accepted') OR username IN (SELECT follows FROM follows WHERE follower = %s)) AND reviewDate > (SELECT lastLogin FROM user WHERE username = %s) AND reviewText IS NOT NULL"), [username, username, username, username, username, username, username, username])
             print(queryResult)
             return {'reviews': queryResult['result']}
+        except Exception as e:
+            print(e)
+            raise internalServerError.InternalServerError()
+
+    # return new songs by artists the user is a fan of
+    def newSongs(self, username):
+        db = self.Database
+        try:
+            queryResult = db.query(
+                ("SELECT title, fname, lname FROM song NATURAL JOIN userFanOfArtist NATURAL JOIN artistPerformsSong NATURAL JOIN artist WHERE username = %s ORDER BY releaseDate DESC LIMIT 10;"), [username])
+            return queryResult['result']
         except Exception as e:
             print(e)
             raise internalServerError.InternalServerError()
