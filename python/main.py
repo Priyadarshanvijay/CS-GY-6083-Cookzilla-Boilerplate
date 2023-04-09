@@ -156,11 +156,22 @@ async def getPastReviews(username: str = Query(...)):
         raise e
 
 
+@app.get('/pastratings')
+async def getPastRatings(username: str = Query(...)):
+    try:
+        results = AccountService.getSongRatings(username)
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
+
+
 @app.middleware("http")
 async def AuthMiddleWare(request: Request, call_next):
     try:
         # added additional routes for testing purposes
-        if (request.url.path not in ['/pastreviews', '/newsongs', '/songsOfWeek', '/signup', '/login', '/sendreq', '/getfriendsreqs', '/querysongs', '/newitems', '/reviewsong', '/ratesong', '/getfriends', '/managereqs']):
+        if (request.url.path not in ['/pastratings', '/pastreviews', '/newsongs', '/songsOfWeek', '/signup', '/login', '/sendreq', '/getfriendsreqs', '/querysongs', '/newitems', '/reviewsong', '/ratesong', '/getfriends', '/managereqs']):
             authHeader = request.headers.get('authorization')
             if authHeader is None:
                 raise InvalidJwtError()

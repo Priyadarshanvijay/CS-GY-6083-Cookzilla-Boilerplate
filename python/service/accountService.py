@@ -84,3 +84,15 @@ class AccountService():
             logger.error("Unable to get song reviews")
             logger.error(e)
             raise internalServerError.InternalServerError()
+
+    # get all past song ratings for a user
+    def getSongRatings(self, username: str):
+        db = self.Database
+        try:
+            result = db.query(
+                "SELECT stars, title FROM rateSong NATURAL JOIN song WHERE username = %s", [username])
+            return result['result']
+        except Exception as e:
+            logger.error("Unable to get song ratings")
+            logger.error(e)
+            raise internalServerError.InternalServerError()
