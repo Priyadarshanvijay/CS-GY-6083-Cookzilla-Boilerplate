@@ -21,6 +21,7 @@ export default function Reviews() {
   const [reviewText, setReviewText] = useState('');
   const currentUser = AuthService.getCurrentUser();
   const username = currentUser.username;
+  const [success, setSuccess] = useState(false);
 
   const handleSongTitleChange = (event) => {
     setSongTitle(event.target.value);
@@ -43,10 +44,14 @@ export default function Reviews() {
           reviewText,
         }),
       });
-      const result = await response.json();
-      // if (result) {
-      //   //TODO: error checking, insertion success or failure prompt to be added
-      // }
+      if (response.ok) {
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+        }, 5000);
+        setSongTitle('');
+        setReviewText('');
+      }
     } catch (err) {
       console.error(err);
     }
@@ -63,6 +68,11 @@ export default function Reviews() {
     <div className="review-rate-container">
       <div className="review-rate">
         <span>Create New Review</span>
+        {success && (
+          <div className="alert alert-success" role="alert">
+            Review added successfully!
+          </div>
+        )}
         <Form onSubmit={handleSubmit}>
           <label htmlFor="songTitle">
             Song Title:
@@ -90,12 +100,6 @@ export default function Reviews() {
           <br />
           <button type="submit">Submit Review</button>
         </Form>
-      </div>
-      <div className="history">
-        <div className="reviews">
-          <h3>Your Past Reviews</h3>
-          TODO
-        </div>
       </div>
     </div>
   );

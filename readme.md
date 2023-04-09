@@ -4,7 +4,9 @@
    - [ ] generalQuery backend SQL bug
 - [ ] playlist -- create, modify, delete, etc. 
 - [x] review 
+  - [ ] fetch past reviews 
 - [ ] rate 
+  - [ ] fetch past ratings 
 - [x] manage friend requests
 - [x] display new items of interest 
     - [x] new reviews by friends or followers

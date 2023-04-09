@@ -188,7 +188,7 @@ async def postSongReview(request: Request, songToAdd: accountService.InsertSongR
         songToAdd.reviewText = data["reviewText"]
         print(songToAdd)
         postedSong = AccountService.insertSongReview(songToAdd)
-        return postedSong
+        return {"songTitle": songToAdd.songTitle, "reviewText": songToAdd.reviewText}
     except Exception as e:
         print(e)
         if not isinstance(e, ExtendableError):
