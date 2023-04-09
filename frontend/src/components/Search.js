@@ -1,27 +1,16 @@
 import React, { useState, useRef } from 'react';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
-// import '../css/search.css';
 
-// import CheckButton from 'react-validation/build/button';
 const API_URL = 'http://localhost:3000/';
 
-const required = (value) => {
-  if (!value) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        This field is required!
-      </div>
-    );
-  }
-};
-
 export default function Search(props) {
-  const [query, setQuery] = useState('');
+  const [artist, setArtist] = useState('');
   const [rating, setRating] = useState('');
+  const [genre, setGenre] = useState('');
   const form = useRef();
 
-  const onSearch = async (query, rating) => {
+  const onSearch = async (artist, genre, rating) => {
     try {
       const response = await fetch(API_URL + 'querysongs', {
         method: 'POST',
@@ -29,11 +18,13 @@ export default function Search(props) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          query,
-          rating,
+          artist: artist,
+          genre: genre,
+          rating: rating,
         }),
       });
       const data = await response.json();
+      console.log(data);
       props.onData(data['songs']);
     } catch (error) {
       console.error(error);
@@ -42,22 +33,28 @@ export default function Search(props) {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    onSearch(query, rating);
+    onSearch(artist, genre, rating);
   };
 
   return (
     <Form className="search-form" onSubmit={handleSearch} ref={form}>
-      <label htmlFor="query"></label>
+      <label htmlFor="artist">Search by Artist</label>
       <Input
         type="text"
-        name="query"
-        placeholder="Search by title, artist or album"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        name="artist"
+        value={artist}
+        onChange={(e) => setArtist(e.target.value)}
         className="search-input"
-        validations={[required]}
       />
-      <label htmlFor="rating"></label>
+      <label htmlFor="rating">Search by Genre</label>
+      <Input
+        type="text"
+        name="genre"
+        value={genre}
+        onChange={(e) => setGenre(e.target.value)}
+        className="rating-input"
+      />
+      <label htmlFor="rating">Search by Rating</label>
       <Input
         type="number"
         name="rating"
@@ -66,8 +63,9 @@ export default function Search(props) {
         placeholder="Filter by average rating"
         value={rating}
         onChange={(e) => setRating(e.target.value)}
-        className="rating-input"
+        className="genre-input"
       />
+      <br />
       <button type="submit" className="search-button">
         Search
       </button>

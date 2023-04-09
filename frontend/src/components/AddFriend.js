@@ -55,7 +55,7 @@ export default function AddFriend(props) {
         <br />
         <button type="submit">Submit </button>
       </Form>
-      {ret == 1 && <p>Requests Sent!</p>}
+      {ret === 1 && <p>Requests Sent!</p>}
     </div>
   );
 }

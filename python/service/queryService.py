@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 from db.main import Database
 from errors import internalServerError
@@ -5,8 +6,9 @@ import datetime
 
 
 class Query(BaseModel):
-    query: str
-    rating: str
+    artist: str
+    genre: Optional[str] = ''
+    rating: Optional[str] = 0
 
 
 class QueryService():
@@ -14,16 +16,60 @@ class QueryService():
         self.Database = db
 
     # query for songs
+
     def generalQuery(self, userQuery: Query):
         db = self.Database
+        query = '''
+            SELECT DISTINCT title, fname, lname, albumTitle
+            FROM artist
+            NATURAL JOIN artistPerformsSong
+            NATURAL JOIN song
+            NATURAL JOIN album
+            WHERE songID IN 
+            (SELECT DISTINCT songID
+            FROM song
+            NATURAL LEFT OUTER JOIN rateSong
+            NATURAL JOIN songGenre
+            NATURAL JOIN artist
+            WHERE (genre = %s
+            AND (fname LIKE %s
+            OR lname LIKE %s))
+            GROUP BY song.songID
+            HAVING AVG(rateSong.stars) >= %s)
+        '''
+        params = (userQuery.genre, '%{}%'.format(
+            userQuery.artist), '%{}%'.format(userQuery.artist), userQuery.rating)
         try:
             queryResult = db.query(
-                ("SELECT title FROM song NATURAL JOIN songGenre WHERE genre = %s"), [userQuery.query])
+                query, params)
+            # print(queryResult)
             return {'songs': queryResult['result']}
         except Exception as e:
             raise internalServerError.InternalServerError()
 
+    # query for songs of the week
+    def songOfWeek(self):
+        db = self.Database
+        query = '''
+            SELECT DISTINCT title, fname, lname
+            FROM song NATURAL JOIN artist NATURAL JOIN artistPerformsSong
+            WHERE songID IN 
+            (SELECT DISTINCT songID
+            FROM rateSong
+            GROUP BY songID
+            HAVING AVG(stars) >= 3)
+            ORDER BY RAND() LIMIT 7; 
+        '''
+        try:
+            queryResult = db.query(
+                query)
+            return {'songs': queryResult['result']}
+        except Exception as e:
+            print(e)
+            raise internalServerError.InternalServerError()
+
     # return new items of interest, takes in username as query param
+
     def newItems(self, username):
         db = self.Database
         try:
@@ -34,4 +80,3 @@ class QueryService():
         except Exception as e:
             print(e)
             raise internalServerError.InternalServerError()
-    

@@ -56,12 +56,6 @@ async def loginHandler(loginData: authService.LoginForm):
             raise InternalServerError()
         raise e
 
-# pass search term in req body, e.g.,
-# {
-#   "query": "Jazz",
-#   "rating": "1"
-# }
-
 
 @app.post("/querysongs")
 async def songQueryHandler(queryData: queryService.Query):
@@ -73,7 +67,16 @@ async def songQueryHandler(queryData: queryService.Query):
             raise InternalServerError()
         raise e
 
-# attach username as query string, for example http://localhost:3000/newitems?username=Yuzu66 to get all new items for user Yuzu66
+
+@app.get("/songsOfWeek")
+async def songQueryHandler():
+    try:
+        results = QueryService.songOfWeek()
+        return results
+    except Exception as e:
+        if not isinstance(e, ExtendableError):
+            raise InternalServerError()
+        raise e
 
 
 @app.get("/newitems")
@@ -96,7 +99,6 @@ async def getFriends(username: str = Query(...)):
         if not isinstance(e, ExtendableError):
             raise InternalServerError()
         raise e
-
 
 
 @app.get("/getfriendsreqs")
@@ -136,7 +138,7 @@ async def sendFriendReq(queryData: friendReqService.friendReq):
 async def AuthMiddleWare(request: Request, call_next):
     try:
         # added additional routes for testing purposes
-        if (request.url.path not in ['/signup', '/login', '/sendreq', '/getfriendsreqs', '/querysongs', '/newitems', '/reviewsong', '/ratesong', '/getfriends', '/managereqs']):
+        if (request.url.path not in ['/songsOfWeek', '/signup', '/login', '/sendreq', '/getfriendsreqs', '/querysongs', '/newitems', '/reviewsong', '/ratesong', '/getfriends', '/managereqs']):
             authHeader = request.headers.get('authorization')
             if authHeader is None:
                 raise InvalidJwtError()

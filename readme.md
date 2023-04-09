@@ -45,15 +45,16 @@ npm start
    1. Find the titles, artists, and albums of songs of a particular genre and/or with an average rating above some threshold and/or by a particular artist, etc.
      
 3. Profile page for registered users 
-   1. playlist -- TODO
+   1. playlist -- [TODO]
       1. create, modify, delete, make public/private, etc. 
    2. review and rate 
       1. review [x]
-      2. rate 
-   3. manage friend requests [x] -- need to update frontend 
+      2. rate [TODO]
+   3. manage friend requests [x] 
       1. accept or reject [x]
       2. issue a request to another user [x]
-   4. display new items of interest -- new reviews by friends or followers, 
-      1. new songs by artists -- TODO update SQL query 
+   4. display new items of interest 
+      1. new reviews by friends or followers [x]
+      2. new songs by artists -- [TODO]  
 
 

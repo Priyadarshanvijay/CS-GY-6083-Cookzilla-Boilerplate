@@ -1,50 +1,32 @@
-import React, { useState } from 'react';
-import Song from './Song';
+import React, { useEffect, useState } from 'react';
+
+const API_URL = 'http://localhost:3000/';
 
 export default function SongList() {
-  //fetch from API, but we hardcode the data for now
-  let [songs, setSongs] = useState([
-    {
-      songName: 'death bed',
-      artist: 'Cookiee Kawaii',
-      imageSrc: 'vibe.jpg',
-      rating: 2,
-    },
-    {
-      songName: 'Vide',
-      artist: 'Cookiee Kawaii',
-      imageSrc: 'vibe.jpg',
-      rating: 1,
-    },
-    { songName: 'Skyline', artist: 'FJK', imageSrc: 'vibe.jpg', rating: 4 },
-    {
-      songName: 'Moral of the story',
-      artist: 'Cookiee Kawaii',
-      imageSrc: 'vibe.jpg',
-      rating: 3,
-    },
-    { songName: 'Greener', artist: 'FJK', imageSrc: 'vibe.jpg', rating: 5 },
-  ]);
+  const [songs, setSongs] = useState(null);
 
-  //adding a new song
-  function add() {
-    setSongs((x) => [
-      ...x,
-      { songName: 'Greener', artist: 'FJK', imageSrc: 'vibe.jpg', rating: 5 },
-    ]);
-  }
+  useEffect(() => {
+    fetch(API_URL + 'songsOfWeek', {
+      method: 'GET',
+    })
+      .then((response) => response.json())
+      .then((data) => setSongs(data))
+      .catch((error) => console.log(error));
+  }, []);
 
   return (
-    <div>
-      {songs.map((x) => (
-        <Song
-          songName={x.songName}
-          rating={x.rating}
-          imageSrc={x.imageSrc}
-          artist={x.artist}
-        ></Song>
-      ))}
-      <button onClick={add}>click me to add a song</button>
+    <div className="songs-of-week">
+      {songs && (
+        <ul>
+          {songs['songs'].map((x) => (
+            <li className="song">
+              <span>
+                {x.title} By {x.fname} {x.lname}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
