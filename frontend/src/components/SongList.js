@@ -21,7 +21,9 @@ export default function SongList() {
           {songs['songs'].map((x) => (
             <li className="song">
               <span>
-                {x.title} By {x.fname} {x.lname}
+                <a href={x.songURL} target="_blank">
+                  {x.title} By {x.fname} {x.lname}
+                </a>
               </span>
             </li>
           ))}

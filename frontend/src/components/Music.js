@@ -12,7 +12,7 @@ export default function Music() {
   return (
     <div className="song-page">
       <header className="song-page-header">
-        <h1>FatEar -- Songs of the Week</h1>
+        <h4>FatEar -- Songs of the Week</h4>
       </header>
       <SongList></SongList>
       <div className="search-container">
@@ -22,10 +22,12 @@ export default function Music() {
         {results && results.length > 0
           ? results.map((result) => (
               <div key={result.id} className="search-result">
-                <p className="song-title">
-                  {result.title} By {result.fname} {result.lname}{' '}
-                </p>
-                <p className="song-album">In Album: {result.albumTitle}</p>
+                <a href={result.songURL} target="_blank">
+                  <p className="song-title">
+                    {result.title} By {result.fname} {result.lname}{' '}
+                  </p>
+                  <p className="song-album">In Album: {result.albumTitle}</p>
+                </a>
               </div>
             ))
           : null}

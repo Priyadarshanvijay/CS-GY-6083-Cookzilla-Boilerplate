@@ -20,7 +20,7 @@ class QueryService():
     def generalQuery(self, userQuery: Query):
         db = self.Database
         query = '''
-            SELECT DISTINCT title, fname, lname, albumTitle
+            SELECT DISTINCT title, fname, lname, albumTitle, songURL
             FROM artist
             NATURAL JOIN artistPerformsSong
             NATURAL JOIN song
@@ -51,7 +51,7 @@ class QueryService():
     def songOfWeek(self):
         db = self.Database
         query = '''
-            SELECT DISTINCT title, fname, lname
+            SELECT DISTINCT title, fname, lname, songURL
             FROM song NATURAL JOIN artist NATURAL JOIN artistPerformsSong
             WHERE songID IN 
             (SELECT DISTINCT songID

@@ -3,7 +3,9 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+a {
+    color: black;
+}
 .song-page {
     background-color: white;
     padding: 50px 20px 20px 20px;
@@ -37,7 +39,7 @@
 
 .song {
     margin-bottom: 5px;
-    
+    color: black;
     width: 96%;
     position: relative;
     display: flex;
@@ -46,12 +48,14 @@
 }
 .song span {
     margin-left: 40px;
+    color: black;
 }
 
 .song span:hover {
-    color: blue;
-    border-bottom: 2px solid #0070f3;
+    /* color: blue; */
+    /* border-bottom: 2px solid #0070f3; */
     cursor: pointer;
+    text-decoration: none;
 }
 .song-rating {
     position: absolute;
@@ -73,4 +77,8 @@
   
   .song-album {
     font-weight: lighter;
+    text-decoration: none;
+  }
+  .song-album:hover {
+    text-decoration: none;
   }
