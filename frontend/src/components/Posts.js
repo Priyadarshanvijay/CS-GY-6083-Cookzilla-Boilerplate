@@ -61,7 +61,9 @@ export default function Posts() {
           {newSongs.map((item) => (
             <div>
               <span>
-                {item.title} By {item.fname} {item.lname}
+                <a href={item.songURL} target="_blank">
+                  {item.title} By {item.fname} {item.lname}
+                </a>
               </span>
             </div>
           ))}

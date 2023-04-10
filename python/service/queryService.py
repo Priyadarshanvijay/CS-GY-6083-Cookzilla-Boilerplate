@@ -19,18 +19,12 @@ class QueryService():
     def generalQuery(self, userQuery: Query):
         db = self.Database
         query = '''
-            SELECT DISTINCT title, fname, lname, albumTitle, songURL
-            FROM artist
-            NATURAL JOIN artistPerformsSong
-            NATURAL JOIN song
-            NATURAL JOIN album
+            SELECT title, fname, lname, albumTitle, songURL
+            FROM (song NATURAL JOIN artistPerformsSong NATURAL JOIN artist NATURAL JOIN songInAlbum NATURAL JOIN album) 
             WHERE songID IN 
             (SELECT DISTINCT songID
-            FROM song
-            NATURAL LEFT OUTER JOIN rateSong
-            NATURAL JOIN songGenre
-            NATURAL JOIN artist
-            WHERE ((genre = %s) AND (fname = %s OR lname = %s))
+            FROM song NATURAL LEFT OUTER JOIN rateSong NATURAL JOIN songGenre NATURAL JOIN artist NATURAL JOIN artistPerformsSong
+            WHERE genre = %s AND (fname = %s OR lname = %s)
             GROUP BY song.songID
             HAVING AVG(rateSong.stars) >= %s)
         '''
@@ -81,7 +75,7 @@ class QueryService():
         db = self.Database
         try:
             queryResult = db.query(
-                ("SELECT title, fname, lname FROM song NATURAL JOIN userFanOfArtist NATURAL JOIN artistPerformsSong NATURAL JOIN artist WHERE username = %s ORDER BY releaseDate DESC LIMIT 10;"), [username])
+                ("SELECT title, fname, lname, songURL FROM song NATURAL JOIN userFanOfArtist NATURAL JOIN artistPerformsSong NATURAL JOIN artist WHERE username = %s ORDER BY releaseDate DESC LIMIT 10;"), [username])
             return queryResult['result']
         except Exception as e:
             print(e)
