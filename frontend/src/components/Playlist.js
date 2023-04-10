@@ -3,11 +3,14 @@ import '../css/playlist.css';
 import AuthService from '../services/auth.service';
 import CreatePlaylist from './CreatePlaylist';
 import AddSongsToPlaylist from './AddSongsToPlaylist';
+import Form from 'react-validation/build/form';
+import Input from 'react-validation/build/input';
 
 const API_URL = 'http://localhost:3000/';
 
 export default function Playlist() {
   const currentUser = AuthService.getCurrentUser();
+  const username = currentUser.username;
   const [playlists, setPlaylists] = useState([]);
   const [description, setDescription] = useState([]);
   const [songs, setSongs] = useState([]);
@@ -40,6 +43,26 @@ export default function Playlist() {
       .then((response) => response.json())
       .then((data) => setSongs(data))
       .catch((error) => console.log(error));
+  };
+
+  const handleSubmitPlaylist = (event)=>{
+    event.preventDefault();
+    addPlaylist(username,description, playlists);
+  }
+
+  const handleSubmitSong = (event)=>{
+    event.preventDefault();
+    addSong(username,songs, playlists);
+  }
+
+  const required = (value) => {
+    if (!value) {
+      return (
+        <div className="alert alert-danger" role="alert">
+          This field is required!
+        </div>
+      );
+    }
   };
 
   // handle adding a new playlist
@@ -127,8 +150,63 @@ export default function Playlist() {
           </div>
         ))}
       </ul>
-      <CreatePlaylist></CreatePlaylist>
+      <CreatePlaylist ></CreatePlaylist>
+        <div className="playlist">
+          <Form name="newplaylist" onSubmit={handleSubmitPlaylist}>
+            <label htmlFor='playlists'>New Playlist Name:
+              <Input 
+              name="playlists"
+              type='text'
+              value={playlists}
+              onChange={e=>setPlaylists(e.target.value)}
+              validations={[required]}
+              >
+              </Input>
+            </label>
+            <label htmlFor='description'>Description:
+              <Input 
+              name="description"
+              type='text'
+              value={description}
+              onChange={e=>setDescription(e.target.value)}
+              validations={[required]}
+              >
+              </Input>
+            </label>
+            <button type="submit"> 
+            Create New Playlist 
+          </button>
+          </Form>
+        </div>
+      
       <AddSongsToPlaylist></AddSongsToPlaylist>
+        <div className="playlist">
+          <Form name="addsong" onSubmit={handleSubmitSong}>
+            <label>Song:
+              <Input 
+              name="songs"
+              type='text'
+              value={songs}
+              onChange={e=>setSongs(e.target.value)}
+              validations={[required]}
+              >
+              </Input>
+            </label>
+            <label>Playlist Name:
+              <Input 
+              name="playlists"
+              type='text'
+              value={playlists}
+              onChange={e=>setPlaylists(e.target.value)}
+              validations={[required]}
+              >
+              </Input>
+            </label>
+            <button type="submit"> 
+            Add Song To Playlist 
+          </button>
+          </Form>
+        </div>
     </div>
   );
 }
