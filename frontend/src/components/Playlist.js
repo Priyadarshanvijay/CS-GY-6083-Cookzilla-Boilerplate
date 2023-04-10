@@ -13,9 +13,11 @@ export default function Playlist() {
   const username = currentUser.username;
   const [playlists, setPlaylists] = useState([]);
   const [description, setDescription] = useState([]);
-  const [songs, setSongs] = useState([]);
+  const [playlistName, setPlaylistName] = useState([]);
+  const [title, setTitle] = useState([]);
+  const [addedToPlaylistName, setAddedToPlaylistName] = useState([]);
 
-  // fetch playlists from backend
+  // fetch playlists(playlistName, title[]) from backend
   useEffect(() => {
     fetch(API_URL + `/getplaylists?username=${currentUser.username}`, {
       method: 'GET',
@@ -27,33 +29,32 @@ export default function Playlist() {
 
   //fetch songs in a playlist -- display songs in playlist onClick
   //!LOGIC IS OFF. NEED TO COMBINE THIS INTO THE ONE ABOVE AND USE A CONDITIONAL TO DISPLAY THE SONGS
-  const fetchSongs = (playlistName) => {
-    const playlistData = {
-      playlistName: playlistName,
-      username: currentUser.username,
-    };
+  // const fetchSongs = (playlistName) => {
+  //   const playlistData = {
+  //     playlistName: playlistName,
+  //     username: currentUser.username,
+  //   };
 
-    fetch(
-      API_URL +
-        `/getsongsinplaylist?playlistData=${JSON.stringify(playlistData)}`,
-      {
-        method: 'GET',
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => setSongs(data))
-      .catch((error) => console.log(error));
+  //   fetch(
+  //     API_URL +
+  //       `/getsongsinplaylist?playlistData=${JSON.stringify(playlistData)}`,
+  //     {
+  //       method: 'GET',
+  //     }
+  //   )
+  //     .then((response) => response.json())
+  //     .then((data) => setSongs(data))
+  //     .catch((error) => console.log(error));
+  // };
+
+  const handleSubmitPlaylist = (event) => {
+    event.preventDefault();
+    addPlaylist(username, description, playlists);
   };
 
-  const handleSubmitPlaylist = (event)=>{
-    event.preventDefault();
-    addPlaylist(username,description, playlists);
-  }
-
-  const handleSubmitSong = (event)=>{
-    event.preventDefault();
-    addSong(username,songs, playlists);
-  }
+  const handlePlaylistNameChange = (event) => {
+    setPlaylistName(event.target.value);
+  };
 
   const required = (value) => {
     if (!value) {
@@ -120,9 +121,7 @@ export default function Playlist() {
     if (response.status === 200) {
       const newPlaylists = [...playlists];
       const playlistsToRemove = playlists.filter(
-        (playlist) =>
-          playlist.playlistName === playlistToRemove &&
-          playlist.username === currentUser.username
+        (playlist) => playlist.playlistName === playlistToRemove
       );
       setPlaylists(newPlaylists);
     }
@@ -143,70 +142,66 @@ export default function Playlist() {
               Show songs
             </button>
             <ul>
-              {songs.map((song) => (
-                <li key={song.id}>{song.title}</li>
+              {playlist.songsInPlaylist.map((song) => (
+                <li key={song}>{song}</li>
               ))}
             </ul>
           </div>
         ))}
       </ul>
-      <CreatePlaylist ></CreatePlaylist>
-        <div className="playlist">
-          <Form name="newplaylist" onSubmit={handleSubmitPlaylist}>
-            <label htmlFor='playlists'>New Playlist Name:
-              <Input 
-              name="playlists"
-              type='text'
-              value={playlists}
-              onChange={e=>setPlaylists(e.target.value)}
+      <CreatePlaylist></CreatePlaylist>
+      <div className="playlist">
+        <Form name="newplaylist" onSubmit={handleSubmitPlaylist}>
+          <label htmlFor="playlistName">
+            New Playlist Name:
+            <Input
+              name="playlistName"
+              type="text"
+              value={playlistName}
+              onChange={handlePlaylistNameChange}
               validations={[required]}
-              >
-              </Input>
-            </label>
-            <label htmlFor='description'>Description:
-              <Input 
+            ></Input>
+          </label>
+          <label htmlFor="description">
+            Description:
+            <Input
               name="description"
-              type='text'
+              type="text"
               value={description}
-              onChange={e=>setDescription(e.target.value)}
+              onChange={(e) => setDescription(e.target.value)}
               validations={[required]}
-              >
-              </Input>
-            </label>
-            <button type="submit"> 
-            Create New Playlist 
-          </button>
-          </Form>
-        </div>
-      
+            ></Input>
+          </label>
+          <button type="submit">Create New Playlist</button>
+        </Form>
+      </div>
+
       <AddSongsToPlaylist></AddSongsToPlaylist>
-        <div className="playlist">
-          <Form name="addsong" onSubmit={handleSubmitSong}>
-            <label>Song:
-              <Input 
-              name="songs"
-              type='text'
-              value={songs}
-              onChange={e=>setSongs(e.target.value)}
+      <div className="playlist">
+        <Form name="addsong" onSubmit={handleSubmitSong}>
+          <label>
+            Song:
+            <Input
+              name="title"
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               validations={[required]}
-              >
-              </Input>
-            </label>
-            <label>Playlist Name:
-              <Input 
-              name="playlists"
-              type='text'
-              value={playlists}
-              onChange={e=>setPlaylists(e.target.value)}
+            ></Input>
+          </label>
+          <label>
+            Playlist Name:
+            <Input
+              name="playlistName"
+              type="text"
+              value={addedToPlaylistName}
+              onChange={(e) => setAddedToPlaylistName(e.target.value)}
               validations={[required]}
-              >
-              </Input>
-            </label>
-            <button type="submit"> 
-            Add Song To Playlist 
-          </button>
-          </Form>
-        </div>
+            ></Input>
+          </label>
+          <button type="submit">Add Song To Playlist</button>
+        </Form>
+      </div>
     </div>
   );
 }

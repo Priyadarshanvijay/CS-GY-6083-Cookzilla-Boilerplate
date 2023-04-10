@@ -19,35 +19,45 @@ class PlaylistService():
     def __init__(self, db: Database):
         self.Database = db
 
-    # get all playlists of a user
+    # get all playlists of a user along with a list of songs in each playlist
     def getAllPlaylists(self, username: str) -> list[str]:
         db = self.Database
         try:
             playlists = db.query(
-                ("SELECT playlistName FROM playlist WHERE username = %s"), [username])
+                "SELECT playlistName, GROUP_CONCAT(song.title) AS songsInPlaylist FROM songInPlaylist NATURAL JOIN song WHERE username = %s GROUP BY playlistName",
+                [username])
 
-            # return a list of the playlist names
-            return [r['playlistName'] for r in playlists['result']]
+            formatted_playlists = []
+            print(playlists['result'])
+            if playlists['result']:  # if there are playlists
+                for playlist in playlists['result']:
+                    formatted_playlist = {
+                        'playlistName': playlist['playlistName'],
+                        'songsInPlaylist': playlist['songsInPlaylist'].split(',')
+                    }
+                    formatted_playlists.append(formatted_playlist)
+
+            return formatted_playlists
 
         except Exception as e:
             logger.error("Unable to get all playlists")
             logger.error(e)
             raise internalServerError.InternalServerError()
 
-    # get all songs in a playlist
-    def getAllSongs(self, querydata: playlist) -> list[str]:
-        db = self.Database
-        try:
-            songs = db.query(
-                ("SELECT title FROM songInPlaylist NATURAL JOIN song WHERE playlistName = %s AND username = %s"), [querydata.playlistName, querydata.username])
+    # # get all songs in a playlist
+    # def getAllSongs(self, querydata: playlist) -> list[str]:
+    #     db = self.Database
+    #     try:
+    #         songs = db.query(
+    #             ("SELECT title FROM songInPlaylist NATURAL JOIN song WHERE playlistName = %s AND username = %s"), [querydata.playlistName, querydata.username])
 
-            # return a list of the songIDs
-            return [r['title'] for r in songs['result']]
+    #         # return a list of the songIDs
+    #         return [r['title'] for r in songs['result']]
 
-        except Exception as e:
-            logger.error("Unable to get songs in playlist")
-            logger.error(e)
-            raise internalServerError.InternalServerError()
+    #     except Exception as e:
+    #         logger.error("Unable to get songs in playlist")
+    #         logger.error(e)
+    #         raise internalServerError.InternalServerError()
 
     # create a playlist
     def createPlaylist(self, querydata: playlist):
@@ -60,7 +70,7 @@ class PlaylistService():
 
             # create playlist
             db.query(("INSERT INTO playlist VALUES (%s, %s, %s, %s)"), [
-                     querydata.playlistName, querydata.username, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), querydata.description])
+                     querydata.username, querydata.playlistName, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), querydata.description])
 
         except Exception as e:
             logger.error("Unable to create playlist")
@@ -97,7 +107,7 @@ class PlaylistService():
                 raise Errors.playlistNotFound
 
             # delete playlist
-            db.query(("DELETE FROM playlist WHERE playlistName = AND username = %s"), [
+            db.query(("DELETE FROM playlist WHERE playlistName = %s AND username = %s"), [
                      querydata.playlistName, querydata.username])
 
         except Exception as e:
