@@ -3,11 +3,10 @@
 - [x] browse songs and search for songs
    - [ ] generalQuery backend SQL bug
 - [ ] playlist -- create, modify, delete, etc. 
-  - [x] backend - not tested yet
+  - [x] backend 
   - [ ] frontend
 - [x] review 
-- [ ] rate 
-  - [x] backend
+- [x] rate 
 - [x] manage friend requests
 - [x] display new items of interest 
     - [x] new reviews by friends or followers
