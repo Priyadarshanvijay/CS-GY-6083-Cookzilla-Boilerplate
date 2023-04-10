@@ -108,7 +108,6 @@ VALUES	(1,1),
 INSERT INTO artistPerformsSong (artistID, songID)
 VALUES	(5,3),
 		(5,7),
-		(6,3),
 		(2,5),
 		(7,8),
 		(8,9),

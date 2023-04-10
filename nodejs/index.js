@@ -4,6 +4,7 @@ const db = require("./db/main")
 const AuthService = require('./service/auth');
 const AuthMiddleWare = require('./middleware/auth');
 const RecipeService = require('./service/recipe');
+const SongService = require('./service/song')
 const errorHandler = require("./middleware/errorHandler");
 const morgan = require('morgan');
 
@@ -46,7 +47,18 @@ app.post('/login', async (req, res, next) => {
   }
 })
 
+app.get('/song', async(req,res,next)=>{
+  try {
+    const songs = await SongService.getSongs()
+    console.log(songs)
+    res.json(songs)
+  } catch (error) {
+    console.error(e);
+    next(e);
+  }
+})
 
+// all routes defined after this middleware requires auth token
 app.use(AuthMiddleWare.loginAuth);
 
 app.get('/user', async (req,res, next) => {

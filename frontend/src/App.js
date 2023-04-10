@@ -8,6 +8,7 @@ import AuthService from './services/auth.service';
 import Login from './components/Login';
 import Register from './components/Register';
 import Profile from './components/Profile';
+import Song from './components/Song'
 
 import EventBus from './common/EventBus';
 
@@ -45,6 +46,11 @@ const App = () => {
           <li className="nav-item">
             <Link to={'/'} className="nav-link">
               Home
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link to={'/song'} className="nav-link">
+              Songs
             </Link>
           </li>
         </div>
@@ -85,6 +91,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/song" element={<Song />} />
         </Routes>
       </div>
     </div>
