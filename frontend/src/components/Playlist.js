@@ -47,9 +47,14 @@ export default function Playlist() {
   //     .catch((error) => console.log(error));
   // };
 
+  const handleSubmitSong = (event) => {
+    event.preventDefault();
+    addSong(username, title, playlistName);
+  };
+
   const handleSubmitPlaylist = (event) => {
     event.preventDefault();
-    addPlaylist(username, description, playlists);
+    addPlaylist(playlistName, description);
   };
 
   const handlePlaylistNameChange = (event) => {
@@ -92,7 +97,7 @@ export default function Playlist() {
       method: 'POST',
       body: JSON.stringify({
         playlistName: playlistName,
-        song: song,
+        title: song,
         username: currentUser.username,
       }),
       headers: {
@@ -138,9 +143,7 @@ export default function Playlist() {
         {playlists.map((playlist) => (
           <div key={playlist.playlistName}>
             <h2>{playlist.playlistName}</h2>
-            <button onClick={() => fetchSongs(playlist.playlistName)}>
-              Show songs
-            </button>
+            <button>Show songs</button>
             <ul>
               {playlist.songsInPlaylist.map((song) => (
                 <li key={song}>{song}</li>
