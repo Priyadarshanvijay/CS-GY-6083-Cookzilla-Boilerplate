@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL = "http://localhost:3000/";
+import {API_URL} from "../constants";
 
 const getSongs = async () => {
   const {data} = await axios.get(API_URL + "song")
