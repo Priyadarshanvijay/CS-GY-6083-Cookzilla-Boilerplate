@@ -4,7 +4,7 @@ const db = require("./db/main")
 const AuthService = require('./service/auth');
 const AuthMiddleWare = require('./middleware/auth');
 const RecipeService = require('./service/recipe');
-const SongService = require('./service/song')
+const SearchService = require('./service/search')
 const errorHandler = require("./middleware/errorHandler");
 const morgan = require('morgan');
 
@@ -47,11 +47,11 @@ app.post('/login', async (req, res, next) => {
   }
 })
 
-app.get('/song', async(req,res,next)=>{
+app.get('/search', async(req,res,next)=>{
   try {
-    const songs = await SongService.getSongs()
-    console.log(songs)
-    res.json(songs)
+    const {song, artist, album, genre, songRating} = req.query
+    const searchResults = await SearchService.getSearchResults(song,artist,album,genre,songRating)
+    res.json(searchResults)
   } catch (error) {
     console.error(e);
     next(e);
