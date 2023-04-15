@@ -24,13 +24,15 @@ class PlaylistService():
         db = self.Database
         try:
             playlists = db.query(
-                "SELECT playlistName, GROUP_CONCAT(song.title) AS songsInPlaylist FROM songInPlaylist NATURAL JOIN song WHERE username = %s GROUP BY playlistName",
+                "SELECT playlist.playlistName, GROUP_CONCAT(song.title) AS songsInPlaylist FROM playlist LEFT JOIN songInPlaylist ON (playlist.username = songInPlaylist.username AND playlist.playlistName = songInPlaylist.playlistName)LEFT JOIN song ON songInPlaylist.songID = song.songID WHERE playlist.username = %s GROUP BY playlist.playlistName",
                 [username])
 
             formatted_playlists = []
             print(playlists['result'])
             if playlists['result']:  # if there are playlists
                 for playlist in playlists['result']:
+                    if playlist['songsInPlaylist'] is None:
+                        playlist['songsInPlaylist'] = ''
                     formatted_playlist = {
                         'playlistName': playlist['playlistName'],
                         'songsInPlaylist': playlist['songsInPlaylist'].split(',')

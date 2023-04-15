@@ -10,16 +10,21 @@ const API_URL = 'http://localhost:3000/';
 
 export default function Playlist() {
   const currentUser = AuthService.getCurrentUser();
-  const username = currentUser.username;
   const [playlists, setPlaylists] = useState([]);
   const [description, setDescription] = useState([]);
   const [playlistName, setPlaylistName] = useState([]);
   const [title, setTitle] = useState([]);
   const [addedToPlaylistName, setAddedToPlaylistName] = useState([]);
 
+  //TODO -- ADDING SUCCESS ALERT FOR ADDING A NEW PLAYLIST AND SONG TO PLAYLIST
+  //TODO -- BREAKING DOWN INTO COMPONENTS --- PASSING PROPS TO CHILD COMPONENTS AND USING STATE IN PARENT COMPONENT.
+  //TODO -- ADDING DELETE BUTTON FOR PLAYLISTS AND SONGS IN PLAYLISTS
+  //TODO -- SHOW SONGS IN PLAYLISTS ON CLICK OF SHOW SONGS BUTTON
+  //TODO -- ADDING CSS TO MAKE IT LOOK PRETTY :)
+
   // fetch playlists(playlistName, title[]) from backend
   useEffect(() => {
-    fetch(API_URL + `/getplaylists?username=${currentUser.username}`, {
+    fetch(API_URL + `getplaylists?username=${currentUser.username}`, {
       method: 'GET',
     })
       .then((response) => response.json())
@@ -27,29 +32,9 @@ export default function Playlist() {
       .catch((error) => console.log(error));
   }, []);
 
-  //fetch songs in a playlist -- display songs in playlist onClick
-  //!LOGIC IS OFF. NEED TO COMBINE THIS INTO THE ONE ABOVE AND USE A CONDITIONAL TO DISPLAY THE SONGS
-  // const fetchSongs = (playlistName) => {
-  //   const playlistData = {
-  //     playlistName: playlistName,
-  //     username: currentUser.username,
-  //   };
-
-  //   fetch(
-  //     API_URL +
-  //       `/getsongsinplaylist?playlistData=${JSON.stringify(playlistData)}`,
-  //     {
-  //       method: 'GET',
-  //     }
-  //   )
-  //     .then((response) => response.json())
-  //     .then((data) => setSongs(data))
-  //     .catch((error) => console.log(error));
-  // };
-
   const handleSubmitSong = (event) => {
     event.preventDefault();
-    addSong(username, title, playlistName);
+    addSong(addedToPlaylistName, title);
   };
 
   const handleSubmitPlaylist = (event) => {
@@ -84,16 +69,23 @@ export default function Playlist() {
         'Content-Type': 'application/json',
       },
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setPlaylists([...playlists, data]);
+      .then((response) => {
+        if (response.status == 200) {
+          const newPlaylists = [...playlists];
+          newPlaylists.push({
+            playlistName: playlistName,
+            description: description,
+            songsInPlaylist: [],
+          });
+          setPlaylists(newPlaylists);
+        }
       })
       .catch((error) => console.log(error));
   };
 
   // addind a song to a playlist
   const addSong = (playlistName, song) => {
-    fetch(API_URL + '/addtoplaylist', {
+    fetch(API_URL + 'addtoplaylist', {
       method: 'POST',
       body: JSON.stringify({
         playlistName: playlistName,
@@ -104,9 +96,18 @@ export default function Playlist() {
         'Content-Type': 'application/json',
       },
     })
-      .then((response) => response.json())
-      .then((data) => {
-        setPlaylists([...playlists, data]);
+      .then((response) => {
+        if (response.status == 200) {
+          const newPlaylists = [...playlists];
+          const playlistsToUpdate = playlists.filter(
+            (playlist) => playlist.playlistName === playlistName
+          );
+          const updatedPlaylist = playlistsToUpdate[0];
+          const songs = updatedPlaylist.songsInPlaylist.split(',');
+          songs.push(song);
+          updatedPlaylist.songsInPlaylist = songs.join(',');
+          setPlaylists(newPlaylists);
+        }
       })
       .catch((error) => console.log(error));
   };
@@ -152,7 +153,8 @@ export default function Playlist() {
           </div>
         ))}
       </ul>
-      <CreatePlaylist></CreatePlaylist>
+
+      {/* <CreatePlaylist></CreatePlaylist> */}
       <div className="playlist">
         <Form name="newplaylist" onSubmit={handleSubmitPlaylist}>
           <label htmlFor="playlistName">
@@ -179,7 +181,7 @@ export default function Playlist() {
         </Form>
       </div>
 
-      <AddSongsToPlaylist></AddSongsToPlaylist>
+      {/* <AddSongsToPlaylist></AddSongsToPlaylist> */}
       <div className="playlist">
         <Form name="addsong" onSubmit={handleSubmitSong}>
           <label>
