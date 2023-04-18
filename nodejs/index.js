@@ -4,6 +4,7 @@ const db = require("./db/main")
 const AuthService = require('./service/auth');
 const AuthMiddleWare = require('./middleware/auth');
 const RecipeService = require('./service/recipe');
+const RatingService = require('./service/rating'); // Added by Nigel
 const SearchService = require('./service/search')
 const errorHandler = require("./middleware/errorHandler");
 const morgan = require('morgan');
@@ -81,6 +82,22 @@ app.post('/recipe', async (req, res, next) => {
     const postedBy = req.user.userName;
     const postedRecipe = await RecipeService.insertRecipe(title, numServings, postedBy);
     res.json(postedRecipe);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+// Added by Nigel
+// Needs to be modified to post a rating
+app.post('/rating', async (req, res, next) => {
+  try {
+    const {
+      songID, stars, ratingDate
+    } = req.body;
+    const username = req.user.userName;
+    const postedRating = await RatingService.insertRating(username, songID, stars, ratingDate);
+    res.json(postedRating);
   } catch (e) {
     console.error(e);
     next(e);
