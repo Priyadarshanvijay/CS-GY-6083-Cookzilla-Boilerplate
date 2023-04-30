@@ -3,12 +3,14 @@ import React, {useState, useEffect} from 'react';
 import {useFormik} from 'formik';
 import {isEmpty} from "lodash";
 import AuthService from "../services/auth.service";
+import RatingService from '../services/rating.service';
 
 const Search = () => {
     const [values, setValues] = useState({});
     const [isDisabled, setIsDisabled] = useState(false)
     const [searchResults, setSearchResults] = useState([])
     const [hasSubmitted, setHasSubmitted] = useState(false)
+    const [newSongRating, setNewSongRating] = useState(undefined)
     const handleChange = event => {
         setValues(prevValues => ({
             ...prevValues,
@@ -18,6 +20,10 @@ const Search = () => {
 
     }
 
+    const handleSongRatingChange = event => {
+        setNewSongRating(event.target.value)
+    }
+
     const handleSubmit = async (values) => {
         setHasSubmitted(true)
         const searchResults = await SearchService.getSearchResults({...values})
@@ -25,6 +31,12 @@ const Search = () => {
             setSearchResults(searchResults)
         }
     }
+
+    const handleSubmitSongRating = async (songID) => {
+        const user = AuthService.getCurrentUser().username
+        await RatingService.postRating(newSongRating, user, songID)
+    }
+
 
     const formik = useFormik({
         initialValues: {
@@ -118,8 +130,15 @@ const Search = () => {
                           <td>{res.title}</td>
                           <td>{res.releaseDate.slice(0,10)}</td>
                           {formik.values.artist && <td>{res.fname + ' ' + res.lname}</td>}
-                          {/*nigel: frontend trigger for rating a song and reviewing a song*/}
-                          {!isEmpty(currentUser) && <td><button onClick={()=>{}}>Rate</button></td>}
+                          {/*Nigel: frontend trigger for rating a song and reviewing a song*/}
+                          {/* treat the rate button as a front end trigger and add an input box next to it that*/}
+                          {/* the rate button sends the value from to the backend.*/}
+                          {!isEmpty(currentUser) && <td><input
+                            name="songRatingInput"
+                            type="text"
+                            value={newSongRating}
+                            onChange={handleSongRatingChange}
+                            /><button onClick={() => {handleSubmitSongRating(res.songID)}}>Rate</button></td>}
                           {!isEmpty(currentUser) && <td><button onClick={()=>{}}>Review</button></td>}
                         </tr>)
                     })}

@@ -59,6 +59,24 @@ app.get('/search', async(req,res,next)=>{
   }
 })
 
+// Added by Nigel
+// Needs to be modified to post a rating
+
+app.post('/rating', async (req, res, next) => {
+  try {
+    const {
+      songRating,
+      user,
+      songID
+    } = req.body;
+    const postedRating = await RatingService.insertRating(user, songID, songRating);
+    res.json(postedRating);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
 // all routes defined after this middleware requires auth token
 app.use(AuthMiddleWare.loginAuth);
 
@@ -88,24 +106,7 @@ app.post('/recipe', async (req, res, next) => {
   }
 });
 
-// Added by Nigel
-// Needs to be modified to post a rating
-app.post('/rating', async (req, res, next) => {
-  try {
-    const {
-      songID, stars, ratingDate
-    } = req.body;
-    const username = req.user.userName;
-    const postedRating = await RatingService.insertRating(username, songID, stars, ratingDate);
-    res.json(postedRating);
-  } catch (e) {
-    console.error(e);
-    next(e);
-  }
-});
-
 app.use(errorHandler);
-
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
