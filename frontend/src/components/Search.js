@@ -1,5 +1,5 @@
 import SearchService from '../services/search.service';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {useFormik} from 'formik';
 import {isEmpty} from "lodash";
 import AuthService from "../services/auth.service";
@@ -12,12 +12,12 @@ const Search = () => {
     const [hasSubmitted, setHasSubmitted] = useState(false)
     const [newSongRating, setNewSongRating] = useState(undefined)
     const handleChange = event => {
+        setHasSubmitted(false)
         setValues(prevValues => ({
             ...prevValues,
             // we use the name to tell Formik which key of `values` to update
             [event.target.name]: event.target.value
         }))
-
     }
 
     const handleSongRatingChange = event => {
@@ -27,9 +27,7 @@ const Search = () => {
     const handleSubmit = async (values) => {
         setHasSubmitted(true)
         const searchResults = await SearchService.getSearchResults({...values})
-        if (!isEmpty(searchResults)) {
-            setSearchResults(searchResults)
-        }
+        setSearchResults(searchResults)
     }
 
     const handleSubmitSongRating = async (songID) => {
@@ -120,6 +118,9 @@ const Search = () => {
                       <th>Song</th>
                       <th>Release Date</th>
                       {formik.values.artist && <th>Artist</th>}
+                        {formik.values.album && <th>Album</th>}
+                        {formik.values.genre &&  <th>Genre</th>}
+                        {formik.values.songRating && <th>Song Rating</th>}
                       {!isEmpty(currentUser) && <th>Rate</th>}
                       {!isEmpty(currentUser) && <th>Review</th>}
                     </tr>
@@ -130,6 +131,9 @@ const Search = () => {
                           <td>{res.title}</td>
                           <td>{res.releaseDate.slice(0,10)}</td>
                           {formik.values.artist && <td>{res.fname + ' ' + res.lname}</td>}
+                            {formik.values.album && <td>{res.albumTitle}</td>}
+                            {formik.values.genre && <td>{res.genre}</td>}
+                            {formik.values.songRating && <td>{res.avgRating}</td>}
                           {/*Nigel: frontend trigger for rating a song and reviewing a song*/}
                           {/* treat the rate button as a front end trigger and add an input box next to it that*/}
                           {/* the rate button sends the value from to the backend.*/}

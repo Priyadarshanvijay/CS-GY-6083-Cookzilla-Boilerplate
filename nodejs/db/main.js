@@ -27,6 +27,7 @@ const initDBConnection = () => {
     user: process.env.DB_USER_ID,
     password: process.env.DB_USER_PASSWORD,
     database: process.env.DB_NAME,
+    port: process.env.DB_PORT
   });
   query = util.promisify(poolWithoutPromise.query).bind(poolWithoutPromise);
   poolInitialized = true;
