@@ -53,7 +53,22 @@ app.get('/search', async(req,res,next)=>{
     const {song, artist, album, genre, songRating} = req.query
     const searchResults = await SearchService.getSearchResults(song,artist,album,genre,songRating)
     res.json(searchResults)
-  } catch (error) {
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+})
+
+// all routes defined after this middleware requires auth token
+app.use(AuthMiddleWare.loginAuth);
+
+app.get('/user', async (req,res, next) => {
+  try {
+    if(!req.user) {
+      throw new USER_NOT_FOUND();
+    }
+    res.json(req.user);
+  } catch (e) {
     console.error(e);
     next(e);
   }
@@ -71,35 +86,6 @@ app.post('/rating', async (req, res, next) => {
     } = req.body;
     const postedRating = await RatingService.insertRating(user, songID, songRating);
     res.json(postedRating);
-  } catch (e) {
-    console.error(e);
-    next(e);
-  }
-});
-
-// all routes defined after this middleware requires auth token
-app.use(AuthMiddleWare.loginAuth);
-
-app.get('/user', async (req,res, next) => {
-  try {
-    if(!req.user) {
-      throw new USER_NOT_FOUND();
-    }
-    res.json(req.user);
-  } catch (e) {
-    console.error(e);
-    next(e);
-  }
-})
-
-app.post('/recipe', async (req, res, next) => {
-  try {
-    const {
-      title, numServings
-    } = req.body;
-    const postedBy = req.user.userName;
-    const postedRecipe = await RecipeService.insertRecipe(title, numServings, postedBy);
-    res.json(postedRecipe);
   } catch (e) {
     console.error(e);
     next(e);

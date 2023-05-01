@@ -1,5 +1,5 @@
 import SearchService from '../services/search.service';
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useFormik} from 'formik';
 import {isEmpty} from "lodash";
 import AuthService from "../services/auth.service";
@@ -10,7 +10,7 @@ const Search = () => {
     const [isDisabled, setIsDisabled] = useState(false)
     const [searchResults, setSearchResults] = useState([])
     const [hasSubmitted, setHasSubmitted] = useState(false)
-    const [newSongRating, setNewSongRating] = useState(undefined)
+    const [newSongRating, setNewSongRating] = useState({})
     const handleChange = event => {
         setHasSubmitted(false)
         setValues(prevValues => ({
@@ -21,7 +21,10 @@ const Search = () => {
     }
 
     const handleSongRatingChange = event => {
-        setNewSongRating(event.target.value)
+        setNewSongRating(prevValues => ({
+            ...prevValues,
+            [event.target.id]: event.target.value
+        }))
     }
 
     const handleSubmit = async (values) => {
@@ -31,8 +34,8 @@ const Search = () => {
     }
 
     const handleSubmitSongRating = async (songID) => {
-        const user = AuthService.getCurrentUser().username
-        await RatingService.postRating(newSongRating, user, songID)
+        const user = AuthService.getCurrentUser()
+        await RatingService.postRating(newSongRating[songID], user, songID)
     }
 
 
@@ -45,9 +48,16 @@ const Search = () => {
             songRating: '',
         },
         onSubmit: (values) => handleSubmit(values),
-        handleChange
+        handleChange,
+        validate: (values) => {
+            const errors = {}
+            if ((values.songRating < 1 || values.songRating > 5) && values.songRating !== ''){
+                errors.songRating = 'Invalid song rating, Please enter a value between 1 - 5'
+            }
+            return errors;
+        },
+        validateOnChange: true
     });
-
     useEffect(() => {
         if (Object.values(formik.values).every((v) => !v)) {
             setIsDisabled(true)
@@ -56,7 +66,12 @@ const Search = () => {
         }
     }, [formik.values])
 
-  const currentUser = AuthService.getCurrentUser();
+    const currentUser = AuthService.getCurrentUser();
+    const handleInputChange = (e) => {
+        setHasSubmitted(false)
+        setSearchResults(undefined)
+        formik.handleChange(e)
+    }
     return (
         <div style={{display: 'flex'}}>
             <div>
@@ -67,7 +82,7 @@ const Search = () => {
                         id="song"
                         name="song"
                         type="text"
-                        onChange={formik.handleChange}
+                        onChange={handleInputChange}
                         value={formik.values.song}
                     />
 
@@ -76,7 +91,7 @@ const Search = () => {
                         id="artist"
                         name="artist"
                         type="text"
-                        onChange={formik.handleChange}
+                        onChange={handleInputChange}
                         value={formik.values.artist}
                     />
 
@@ -85,7 +100,7 @@ const Search = () => {
                         id="album"
                         name="album"
                         type="text"
-                        onChange={formik.handleChange}
+                        onChange={handleInputChange}
                         value={formik.values.album}
                     />
                     <label htmlFor="genre">Genre</label>
@@ -93,7 +108,7 @@ const Search = () => {
                         id="genre"
                         name="genre"
                         type="text"
-                        onChange={formik.handleChange}
+                        onChange={handleInputChange}
                         value={formik.values.genre}
                     />
                     {/*add validation: allow 1-5 only*/}
@@ -102,9 +117,10 @@ const Search = () => {
                         id="songRating"
                         name="songRating"
                         type="text"
-                        onChange={formik.handleChange}
+                        onChange={handleInputChange}
                         value={formik.values.songRating}
                     />
+                    {formik.errors.songRating && <span style={{color: "red", fontSize:'10px'}}>{formik.errors.songRating}</span>}
                     <div style={{marginTop: '1rem'}}>
                         <button type="submit" disabled={isDisabled}>Submit</button>
                     </div>
@@ -115,35 +131,45 @@ const Search = () => {
                 <table style={{marginLeft: '10rem', height: 'fit-content'}}>
                     <thead>
                     <tr>
-                      <th>Song</th>
-                      <th>Release Date</th>
-                      {formik.values.artist && <th>Artist</th>}
+                        <th>Song</th>
+                        <th>Release Date</th>
+                        {formik.values.artist && <th>Artist</th>}
                         {formik.values.album && <th>Album</th>}
-                        {formik.values.genre &&  <th>Genre</th>}
+                        {formik.values.genre && <th>Genre</th>}
                         {formik.values.songRating && <th>Song Rating</th>}
-                      {!isEmpty(currentUser) && <th>Rate</th>}
-                      {!isEmpty(currentUser) && <th>Review</th>}
+                        {!isEmpty(currentUser) && <th>Rate</th>}
+                        {!isEmpty(currentUser) && <th>Review</th>}
                     </tr>
                     </thead>
                     <tbody>
                     {searchResults.map((res, idx) => {
                         return (<tr key={idx}>
-                          <td>{res.title}</td>
-                          <td>{res.releaseDate.slice(0,10)}</td>
-                          {formik.values.artist && <td>{res.fname + ' ' + res.lname}</td>}
+                            <td><a href={res.songURL}>{res.title}</a></td>
+                            <td>{res.releaseDate.slice(0, 10)}</td>
+                            {formik.values.artist && <td>{res.fname + ' ' + res.lname}</td>}
                             {formik.values.album && <td>{res.albumTitle}</td>}
                             {formik.values.genre && <td>{res.genre}</td>}
                             {formik.values.songRating && <td>{res.avgRating}</td>}
-                          {/*Nigel: frontend trigger for rating a song and reviewing a song*/}
-                          {/* treat the rate button as a front end trigger and add an input box next to it that*/}
-                          {/* the rate button sends the value from to the backend.*/}
-                          {!isEmpty(currentUser) && <td><input
-                            name="songRatingInput"
-                            type="text"
-                            value={newSongRating}
-                            onChange={handleSongRatingChange}
-                            /><button onClick={() => {handleSubmitSongRating(res.songID)}}>Rate</button></td>}
-                          {!isEmpty(currentUser) && <td><button onClick={()=>{}}>Review</button></td>}
+                            {/*Nigel: frontend trigger for rating a song and reviewing a song*/}
+                            {/* treat the rate button as a front end trigger and add an input box next to it that*/}
+                            {/* the rate button sends the value from to the backend.*/}
+                            {!isEmpty(currentUser) && <td><input
+                                id={res.songID}
+                                name="songRatingInput"
+                                type="text"
+                                value={newSongRating[res.songID]}
+                                onChange={handleSongRatingChange}
+                            />
+                                <button onClick={() => {
+                                    handleSubmitSongRating(res.songID)
+                                }}>Rate
+                                </button>
+                            </td>}
+                            {!isEmpty(currentUser) && <td>
+                                <button onClick={() => {
+                                }}>Review
+                                </button>
+                            </td>}
                         </tr>)
                     })}
                     </tbody>

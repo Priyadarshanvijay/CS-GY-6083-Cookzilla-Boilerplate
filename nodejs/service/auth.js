@@ -26,7 +26,7 @@ const login = async (userName, password) => {
     }
     return {
       ...userRows[0],
-      token: generateToken(user.userName),
+      token: generateToken(user.username),
       password: undefined,
     };
   } catch (e) {
