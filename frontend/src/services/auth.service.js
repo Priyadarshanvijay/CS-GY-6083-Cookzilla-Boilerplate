@@ -1,5 +1,6 @@
 import axios from "axios";
-import {API_URL} from "../constants";
+
+const API_URL = "http://localhost:8080/";
 
 const register = (userName,
   password,

@@ -8,7 +8,8 @@ import AuthService from './services/auth.service';
 import Login from './components/Login';
 import Register from './components/Register';
 import Profile from './components/Profile';
-import Search from './components/Search'
+import Search from './components/Search';
+import People from './components/People'
 
 import EventBus from './common/EventBus';
 
@@ -53,6 +54,11 @@ const App = () => {
               Search
             </Link>
           </li>
+          <li className="nav-item">
+            <Link to={'/people'} className="nav-link">
+              People
+            </Link>
+          </li>
         </div>
 
         {currentUser ? (
@@ -92,6 +98,7 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/people" element={<People />} />
         </Routes>
       </div>
     </div>

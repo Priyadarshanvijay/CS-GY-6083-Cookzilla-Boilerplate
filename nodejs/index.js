@@ -58,6 +58,17 @@ app.get('/search', async(req,res,next)=>{
   }
 })
 
+app.get('/people', async(req,res,next)=>{
+  try {
+    const {firstName, lastName, email} = req.query
+    const peopleResults = await PeopleService.getPeopleResults(firstName, lastName, email)
+    res.json(peopleResults)
+  } catch (error) {
+    console.error(e);
+    next(e);
+  }
+})
+
 // all routes defined after this middleware requires auth token
 app.use(AuthMiddleWare.loginAuth);
 
