@@ -5,7 +5,7 @@ const getToken = ({ authorization }) => (authorization && authorization.split(' 
 const loginAuth = async (req, res, next) => {
   try {
     const token = getToken(req.headers);
-    const user = await AuthService.getUserFromToken(token);
+    const {user} = await AuthService.getUserFromToken(token);
     req.user = user;
     next();
   } catch (e) {

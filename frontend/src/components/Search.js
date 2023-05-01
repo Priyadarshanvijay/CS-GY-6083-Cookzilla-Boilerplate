@@ -2,15 +2,16 @@ import SearchService from '../services/search.service';
 import React, {useEffect, useState} from 'react';
 import {useFormik} from 'formik';
 import {isEmpty} from "lodash";
-import AuthService from "../services/auth.service";
-import RatingService from '../services/rating.service';
+import {SongModal} from "./SongModal";
 
 const Search = () => {
     const [values, setValues] = useState({});
     const [isDisabled, setIsDisabled] = useState(false)
     const [searchResults, setSearchResults] = useState([])
     const [hasSubmitted, setHasSubmitted] = useState(false)
-    const [newSongRating, setNewSongRating] = useState({})
+    const [showSongModal, setShowSongModal] = useState(false)
+    const [currentSongInView, setCurrentSongInView] = useState({})
+
     const handleChange = event => {
         setHasSubmitted(false)
         setValues(prevValues => ({
@@ -20,24 +21,11 @@ const Search = () => {
         }))
     }
 
-    const handleSongRatingChange = event => {
-        setNewSongRating(prevValues => ({
-            ...prevValues,
-            [event.target.id]: event.target.value
-        }))
-    }
-
     const handleSubmit = async (values) => {
         setHasSubmitted(true)
         const searchResults = await SearchService.getSearchResults({...values})
         setSearchResults(searchResults)
     }
-
-    const handleSubmitSongRating = async (songID) => {
-        const user = AuthService.getCurrentUser()
-        await RatingService.postRating(newSongRating[songID], user, songID)
-    }
-
 
     const formik = useFormik({
         initialValues: {
@@ -66,14 +54,14 @@ const Search = () => {
         }
     }, [formik.values])
 
-    const currentUser = AuthService.getCurrentUser();
     const handleInputChange = (e) => {
         setHasSubmitted(false)
         setSearchResults(undefined)
         formik.handleChange(e)
     }
     return (
-        <div style={{display: 'flex'}}>
+        <div style={{display: 'flex', height: '100%', width: '100%'}}>
+            {showSongModal && <SongModal setShowSongModal={setShowSongModal} song={currentSongInView} />}
             <div>
                 <h3>Search</h3>
                 <form onSubmit={formik.handleSubmit}>
@@ -133,43 +121,27 @@ const Search = () => {
                     <tr>
                         <th>Song</th>
                         <th>Release Date</th>
-                        {formik.values.artist && <th>Artist</th>}
+                        <th>Artist</th>
                         {formik.values.album && <th>Album</th>}
                         {formik.values.genre && <th>Genre</th>}
                         {formik.values.songRating && <th>Song Rating</th>}
-                        {!isEmpty(currentUser) && <th>Rate</th>}
-                        {!isEmpty(currentUser) && <th>Review</th>}
+                        <th>Song URL</th>
+                        <th>Artist URL</th>
                     </tr>
                     </thead>
                     <tbody>
                     {searchResults.map((res, idx) => {
                         return (<tr key={idx}>
-                            <td><a href={res.songURL}>{res.title}</a></td>
+                            <td onClick={()=>{
+                                setCurrentSongInView(res)
+                                setShowSongModal(true)}}>{res.title}</td>
                             <td>{res.releaseDate.slice(0, 10)}</td>
-                            {formik.values.artist && <td>{res.fname + ' ' + res.lname}</td>}
+                            <td>{res.fname + ' ' + res.lname}</td>
                             {formik.values.album && <td>{res.albumTitle}</td>}
                             {formik.values.genre && <td>{res.genre}</td>}
                             {formik.values.songRating && <td>{res.avgRating}</td>}
-                            {/*Nigel: frontend trigger for rating a song and reviewing a song*/}
-                            {/* treat the rate button as a front end trigger and add an input box next to it that*/}
-                            {/* the rate button sends the value from to the backend.*/}
-                            {!isEmpty(currentUser) && <td><input
-                                id={res.songID}
-                                name="songRatingInput"
-                                type="text"
-                                value={newSongRating[res.songID]}
-                                onChange={handleSongRatingChange}
-                            />
-                                <button onClick={() => {
-                                    handleSubmitSongRating(res.songID)
-                                }}>Rate
-                                </button>
-                            </td>}
-                            {!isEmpty(currentUser) && <td>
-                                <button onClick={() => {
-                                }}>Review
-                                </button>
-                            </td>}
+                            <td><a href={res.songURL}>Listen</a></td>
+                            <td><a href={res.artistURL}>Learn More</a></td>
                         </tr>)
                     })}
                     </tbody>

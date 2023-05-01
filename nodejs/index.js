@@ -81,10 +81,10 @@ app.post('/rating', async (req, res, next) => {
   try {
     const {
       songRating,
-      user,
       songID
     } = req.body;
-    const postedRating = await RatingService.insertRating(user, songID, songRating);
+    const username = req.user.username;
+    const postedRating = await RatingService.insertRating(username, songID, songRating);
     res.json(postedRating);
   } catch (e) {
     console.error(e);

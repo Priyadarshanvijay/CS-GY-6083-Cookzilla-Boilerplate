@@ -43,3 +43,7 @@ a:hover{
   color: blue;
   text-decoration: underline;
 }
+
+span {
+  margin-left: 1rem;
+}
