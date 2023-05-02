@@ -89,7 +89,8 @@ const People = () => {
                       <th>First Name</th>
                       <th>Last Name</th>
                       <th>Email Address</th>
-              
+                      <th>Profile</th>
+                      <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -98,8 +99,8 @@ const People = () => {
                           <td>{res.fname}</td>
                           <td>{res.lname}</td>
                           <td>{res.email}</td>
-                          {!isEmpty(currentUser) && <td><button onClick={()=>{}}>Follow</button></td>}
-                          {!isEmpty(currentUser) && <td><button onClick={()=>{}}>Send Friend Request</button></td>}
+                          <td>{res.userProfile}</td>
+                          {!isEmpty(currentUser) && <td><button onClick={()=>{}}>Follow</button> <button onClick={()=>{}}>Send Friend Request</button></td>}
                         </tr>)
                     })}
                     </tbody>
