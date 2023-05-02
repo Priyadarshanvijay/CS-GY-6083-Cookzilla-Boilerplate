@@ -46,9 +46,9 @@ const People = () => {
 
   const currentUser = AuthService.getCurrentUser();
     return (
-        <div style={{display: 'flex'}}>
+        <div style={{display: 'flex', height: '100%', width: '100%', marginLeft: '32px', marginTop: '32px'}}>
             <div>
-                <h3>People Finder</h3>
+                <h3>User Search</h3>
                 <form onSubmit={formik.handleSubmit}>
                     <label htmlFor="firstName">First Name</label>
                     <input
@@ -95,11 +95,11 @@ const People = () => {
                     <tbody>
                     {peopleResults.map((res, idx) => {
                         return (<tr key={idx}>
-                          <td>{res.fName}</td>
-                          <td>{res.lName}</td>
+                          <td>{res.fname}</td>
+                          <td>{res.lname}</td>
                           <td>{res.email}</td>
-                          {!isEmpty(currentUser) && <td><button onClick={()=>{}}>Rate</button></td>}
-                          {!isEmpty(currentUser) && <td><button onClick={()=>{}}>Review</button></td>}
+                          {!isEmpty(currentUser) && <td><button onClick={()=>{}}>Follow</button></td>}
+                          {!isEmpty(currentUser) && <td><button onClick={()=>{}}>Send Friend Request</button></td>}
                         </tr>)
                     })}
                     </tbody>

@@ -6,6 +6,7 @@ const AuthMiddleWare = require('./middleware/auth');
 const RecipeService = require('./service/recipe');
 const RatingService = require('./service/rating'); // Added by Nigel
 const SearchService = require('./service/search')
+const PeopleService = require('./service/people')
 const errorHandler = require("./middleware/errorHandler");
 const morgan = require('morgan');
 

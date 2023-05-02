@@ -2,27 +2,30 @@ const db = require('../db/main');
 
 const getPeopleResults = async (firstName, lastName, email) => {
   try {
+
     const filters = []
 
     if (firstName){
-      filters.push(`users.fname = "${firstName}"`)
+      filters.push(`users.fname LIKE "%${firstName}%"`)
     }
     if (lastName){
-      filters.push(`users.lname = "${lastName}"`)
+      filters.push(`users.lname LIKE "%${lastName}%"`)
     }
     if (email) {
-      filters.push(`users.email = "${email}"`)
+      filters.push(`users.email LIKE "%${email}%"`)
     }
 
-    
     const filtersQueryString = filters.join(' AND ')
 
-    console.log('SELECT * FROM users WHERE '
-    + filtersQueryString)
-    const peopleResults = await db.getDBObject().query('SELECT * FROM users WHERE'
+    console.log('SELECT * FROM users WHERE ' + filtersQueryString)
+
+   const peopleResults = await db.getDBObject().query('SELECT * FROM users WHERE '
         + filtersQueryString)
-    console.log(peopleResults)
-    return peopleResults;
+
+   console.log(peopleResults)
+
+   return peopleResults;
+
   } catch (e) {
     console.error(e)
     console.error('unable to find person')

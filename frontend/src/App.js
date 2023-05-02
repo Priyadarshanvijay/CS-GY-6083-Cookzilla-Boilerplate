@@ -54,11 +54,6 @@ const App = () => {
               Search
             </Link>
           </li>
-          <li className="nav-item">
-            <Link to={'/people'} className="nav-link">
-              People
-            </Link>
-          </li>
         </div>
 
         {currentUser ? (
@@ -68,6 +63,11 @@ const App = () => {
               setShowFriendRequestModal(!showFriendRequestModal)
             }}>
               <FontAwesomeIcon  style={{marginTop: '12px', marginRight: '16px', color: 'lightgrey'}} icon={faUser} />
+            </li>
+            <li className="nav-item">
+            <Link to={'/people'} className="nav-link">
+              Users
+            </Link>
             </li>
             <li className="nav-item">
               <a href="/login" className="nav-link" onClick={logOut}>
