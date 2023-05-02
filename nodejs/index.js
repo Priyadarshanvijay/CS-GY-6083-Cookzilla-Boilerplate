@@ -4,6 +4,7 @@ const db = require("./db/main")
 const AuthService = require('./service/auth');
 const AuthMiddleWare = require('./middleware/auth');
 const RecipeService = require('./service/recipe');
+const RatingService = require('./service/rating'); // Added by Nigel
 const SearchService = require('./service/search')
 const errorHandler = require("./middleware/errorHandler");
 const morgan = require('morgan');
@@ -52,7 +53,7 @@ app.get('/search', async(req,res,next)=>{
     const {song, artist, album, genre, songRating} = req.query
     const searchResults = await SearchService.getSearchResults(song,artist,album,genre,songRating)
     res.json(searchResults)
-  } catch (error) {
+  } catch (e) {
     console.error(e);
     next(e);
   }
@@ -84,14 +85,18 @@ app.get('/user', async (req,res, next) => {
   }
 })
 
-app.post('/recipe', async (req, res, next) => {
+// Added by Nigel
+// Needs to be modified to post a rating
+
+app.post('/rating', async (req, res, next) => {
   try {
     const {
-      title, numServings
+      songRating,
+      songID
     } = req.body;
-    const postedBy = req.user.userName;
-    const postedRecipe = await RecipeService.insertRecipe(title, numServings, postedBy);
-    res.json(postedRecipe);
+    const username = req.user.username;
+    const postedRating = await RatingService.insertRating(username, songID, songRating);
+    res.json(postedRating);
   } catch (e) {
     console.error(e);
     next(e);
@@ -99,7 +104,6 @@ app.post('/recipe', async (req, res, next) => {
 });
 
 app.use(errorHandler);
-
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
