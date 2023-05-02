@@ -60,7 +60,7 @@ const Search = () => {
         formik.handleChange(e)
     }
     return (
-        <div style={{display: 'flex', height: '100%', width: '100%'}}>
+        <div style={{display: 'flex', height: '100%', width: '100%', marginLeft: '32px', marginTop: '32px'}}>
             {showSongModal && <SongModal setShowSongModal={setShowSongModal} song={currentSongInView} />}
             <div>
                 <h3>Search</h3>

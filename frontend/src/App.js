@@ -7,14 +7,17 @@ import AuthService from './services/auth.service';
 
 import Login from './components/Login';
 import Register from './components/Register';
-import Profile from './components/Profile';
 import Search from './components/Search'
 
 import EventBus from './common/EventBus';
+import Home from "./components/Home";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faUser} from "@fortawesome/free-solid-svg-icons";
+import FriendRequestModal from "./components/FriendRequestModal";
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState(undefined);
-
+  const [showFriendRequestModal, setShowFriendRequestModal] = useState(false)
   useEffect(() => {
     const user = AuthService.getCurrentUser();
 
@@ -39,9 +42,6 @@ const App = () => {
   return (
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <Link to={'/'} className="navbar-brand">
-          FatEar
-        </Link>
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
             <Link to={'/'} className="nav-link">
@@ -57,10 +57,11 @@ const App = () => {
 
         {currentUser ? (
           <div className="navbar-nav ml-auto">
-            <li className="nav-item">
-              <Link to={'/profile'} className="nav-link">
-                {currentUser.username}
-              </Link>
+            {showFriendRequestModal && <FriendRequestModal setShowFriendRequestModal={setShowFriendRequestModal}/>}
+            <li  className="nav-item" style={{cursor: 'pointer'}}  onClick={()=>{
+              setShowFriendRequestModal(!showFriendRequestModal)
+            }}>
+              <FontAwesomeIcon  style={{marginTop: '12px', marginRight: '16px', color: 'lightgrey'}} icon={faUser} />
             </li>
             <li className="nav-item">
               <a href="/login" className="nav-link" onClick={logOut}>
@@ -85,12 +86,11 @@ const App = () => {
         )}
       </nav>
 
-      <div style={{margin: '4rem'}}>
+      <div style={{height: '100%'}}>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<Profile />} />
           <Route path="/search" element={<Search />} />
         </Routes>
       </div>
