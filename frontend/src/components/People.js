@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react';
 import {useFormik} from 'formik';
 import {isEmpty} from "lodash";
 import AuthService from "../services/auth.service";
+import FollowService from '../services/follow.service';
 
 const People = () => {
     const [values, setValues] = useState({});
@@ -17,6 +18,11 @@ const People = () => {
         }))
 
     }
+
+    const handleFollow = async (follower, follows) => {
+        await FollowService.postFollow({follower, follows})
+    }
+
 
     const handleSubmit = async (values) => {
         setHasSubmitted(true)

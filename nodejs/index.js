@@ -5,8 +5,11 @@ const AuthService = require('./service/auth');
 const AuthMiddleWare = require('./middleware/auth');
 const RecipeService = require('./service/recipe');
 const RatingService = require('./service/rating'); // Added by Nigel
-const SearchService = require('./service/search')
-const PeopleService = require('./service/people')
+const SearchService = require('./service/search');
+const PeopleService = require('./service/people');
+const FollowService = require('./service/follow');
+const FriendService = require('./service/friend');
+const artistService = require('./service/artist');
 const errorHandler = require("./middleware/errorHandler");
 const morgan = require('morgan');
 
@@ -60,16 +63,6 @@ app.get('/search', async(req,res,next)=>{
   }
 })
 
-app.get('/people', async(req,res,next)=>{
-  try {
-    const {firstName, lastName, email} = req.query
-    const peopleResults = await PeopleService.getPeopleResults(firstName, lastName, email)
-    res.json(peopleResults)
-  } catch (error) {
-    console.error(e);
-    next(e);
-  }
-})
 
 // all routes defined after this middleware requires auth token
 app.use(AuthMiddleWare.loginAuth);
@@ -103,6 +96,114 @@ app.post('/rating', async (req, res, next) => {
     next(e);
   }
 });
+
+// GET route to search for users
+app.get('/people', async(req,res,next)=>{
+  try {
+    const {firstName, lastName, email} = req.query
+    const peopleResults = await PeopleService.getPeopleResults(firstName, lastName, email)
+    res.json(peopleResults)
+  } catch (error) {
+    console.error(e);
+    next(e);
+  }
+})
+
+// POST route to follow user
+app.post('/follow', async (req, res, next) => {
+  try {
+    const {
+        follower,
+        follows
+    } = req.body;
+    const postFollow = await FollowService.follow(follower, follows);
+    res.json(postFollow);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+// POST route to send friend request
+app.post('/friend/invite', async (req, res, next) => {
+  try {
+    const {
+        user1,
+        user2
+    } = req.body;
+    const postFriend = await FriendService.inviteFriend(user1, user2);
+    res.json(postFriend);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+// POST route to accept friend request
+app.post('/friend/accept', async (req, res, next) => {
+  try {
+    const {
+        user1,
+        user2
+    } = req.body;
+    const postFriend = await FriendService.acceptFriend(user1, user2);
+    res.json(postFriend);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+// POST rout to decline friend request
+app.post('/friend/decline', async (req, res, next) => {
+  try {
+    const {
+        user1,
+        user2
+    } = req.body;
+    const postFriend = await FriendService.declineFriend(user1, user2);
+    res.json(postFriend);
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+// GET route to get reviews for users' friends
+app.get('/friend/reviews', async(req,res,next)=>{
+  try {
+    const {user} = req.query
+    const results = await FriendService.newReviewsByFriends(user)
+    res.json(results)
+  } catch (error) {
+    console.error(e);
+    next(e);
+  }
+})
+
+// GET route to get reviews from people users follows
+app.get('/follows/reviews', async(req,res,next)=>{
+  try {
+    const {user} = req.query
+    const results = await FollowService.newReviewsByFollowedUsers(user)
+    res.json(results)
+  } catch (error) {
+    console.error(e);
+    next(e);
+  }
+})
+
+// GET route to get new songs by artists user is fan of
+app.get('/artist/favorite/newsongs', async(req,res,next)=>{
+  try {
+    const {user} = req.query
+    const results = await artistService.getNewSongsByFavoriteArtist(user)
+    res.json(results)
+  } catch (error) {
+    console.error(e);
+    next(e);
+  }
+})
 
 app.use(errorHandler);
 

@@ -1,5 +1,7 @@
 const db = require('../db/main');
+const InternalServerError = require('../errors/internalServerError');
 
+// Function to search for people
 const getPeopleResults = async (firstName, lastName, email) => {
   try {
 
